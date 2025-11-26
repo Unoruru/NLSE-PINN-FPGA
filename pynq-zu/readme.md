@@ -16,4 +16,4 @@ This part assumes that a ONNX file has been created for the quantised neural net
  3. [Optional] Place the `sample/folding_config.json` file from this repo and place it into the newly created folder. Adjust the parameters within the file to suit your build needs. For alternatives, see the wiki for the FINN framework.
  4. `cd` back into the folder containing the cloned FINN framework. Run `./run-docker.sh build_dataflow $path_to_folder`, where `$path_to_folder` is the path to the newly created folder containing the above.
 
- A sample bitfile for the is available in ``/bitfile`. This contains the `tfc-w1a1` neural network from the FINN_EXAMPLES repo, for juypter notebook example 0.
+ A sample bitfile for the is available in `/bitfile`. This contains the `tfc-w1a1` neural network from the FINN_EXAMPLES repo, for juypter notebook example 0.
