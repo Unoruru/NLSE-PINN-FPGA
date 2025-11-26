@@ -4,6 +4,7 @@
  3. Replace the following file within the cloned FINN framework for support of PYNQ-ZU:
 
 Replace: `$finn_repo/src/finn/transformation/fpgadataflow/templates.py`
+
 With: `$this_repo/replacements/templates.py`
 
  4. Ensure that the PYNQ-ZU board is downloaded within Vivado Store.
