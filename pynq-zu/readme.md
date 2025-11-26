@@ -2,9 +2,9 @@
  1. Follow setup instructions in the "quick start" page on FINN github.
  2. Before running the docker quick start test, you must setup the enviornmental variables in the local terminal window. Place `en_var.sh` into the main folder. Alter the path and version number based on the installed version of Xilinx Vivado. Alter the board part to suit needs. `cd` into the folder containing the cloned FINN repo and run `source en_var.sh`.
  3. Replace the following file within the cloned FINN framework for support of PYNQ-ZU:
-    # replace the following:
+replace the following:
     $finn_repo/src/finn/transformation/fpgadataflow/templates.py
-    # with the following:
+with the following:
     $this_repo/replacements/templates.py
  4. Ensure that the PYNQ-ZU board is downloaded within Vivado Store.
 
