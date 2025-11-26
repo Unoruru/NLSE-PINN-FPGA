@@ -1,13 +1,19 @@
 # Setup FINN Framework for PYNQ-ZU
  1. Follow setup instructions in the "quick start" page on FINN github.
  2. Before running the docker quick start test, you must setup the environmental variables in the local terminal window. Place `en_var.sh` into the main folder. Alter the path and version number based on the installed version of Xilinx Vivado. Alter the board part to suit needs. `cd` into the folder containing the cloned FINN repo and run `source en_var.sh`.
- 3. Replace the following file within the cloned FINN framework for support of PYNQ-ZU:
+ 3. Replace the following files within the cloned FINN framework for support of PYNQ-ZU:
 
-Replace: `$finn_repo/src/finn/transformation/fpgadataflow/templates.py`
-
-With: `$this_repo/replacements/templates.py`
-
- 4. Ensure that the PYNQ-ZU board is downloaded within Vivado Store.
+Replace:
+```
+$finn_repo/src/finn/transformation/fpgadataflow/templates.py
+$finn_repo/src/finn/util/basic.py
+```
+With: 
+```
+$this_repo/replacements/templates.py
+$this_repo/replacements/basic.py
+```
+ 5. Ensure that the PYNQ-ZU board is downloaded within Vivado Store.
 
 # Running FINN Framework for PYNQ-ZU
 This part assumes that a ONNX file has been created for the quantised neural network.
