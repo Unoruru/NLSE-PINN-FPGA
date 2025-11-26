@@ -1,0 +1,21 @@
+{
+  "output_dir": "output_tfc_w1a1_Pynq-ZU",
+  "target_fps": 100000,
+  "mvau_wwidth_max": 10000,
+  "synth_clk_period_ns": 10.0,
+  "board": "Pynq-ZU",
+  "standalone_thresholds": false,
+  "folding_config_file": "folding_config.json",
+  "shell_flow_type": "vivado_zynq",
+  "verify_save_rtlsim_waveforms": true,
+  "force_python_rtlsim": true,
+  "generate_outputs": [
+    "estimate_reports",
+    "stitched_ip",
+    "rtlsim_performance",
+    "pynq_driver",
+    "out_of_context_synth",
+    "bitfile",
+    "deployment_package"
+  ]
+}
