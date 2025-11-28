@@ -12,7 +12,7 @@
  7. Run `./run-docker.sh quicktest` to verify that both docker and the FINN framework is working properly.
 
  > [!NOTE]
- > The `en_var.sh` folder only sets the required environmental variables for the current local session terminal window. Once the terminal window is killed, or when operating within a different terminal window, you must run the script again to setup the enviornmental variables. Running the framework without the correct environmental variables can lead to irreparable damage to the modifications on the original FINN framework, which will break compatibility with the Pynq-ZU FPGA development board.
+ > The `en_var.sh` script only sets the required environmental variables for the current local session terminal window. Once the terminal window is killed, or when operating within a different terminal window, you must run the script again to setup the enviornmental variables. Running the framework without the correct environmental variables can lead to irreparable damage to the modifications on the original FINN framework, which will break compatibility with the Pynq-ZU FPGA development board.
 
 # Running FINN Framework for Pynq-ZU
 
