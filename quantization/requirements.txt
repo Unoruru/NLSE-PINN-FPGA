@@ -1,5 +1,0 @@
-torch
-brevitas
-numpy
-scipy
-matplotlib
