@@ -1,7 +1,3 @@
-# PINNs QAT Project
-
-This repository implements Physics-Informed Neural Networks (PINNs) for solving the Non-Linear Schrödinger Equation (NLSE). It includes both a standard PINN implementation and a Quantization-Aware Training (QAT) version using Brevitas to explore model quantization for efficient hardware deployment.
-
 ## Project Structure
 
 The project is organized into two main components:
@@ -68,9 +64,17 @@ The model `QuantPINN_NLSE` replaces standard PyTorch layers with:
 - **`qnn.QuantLinear`**: For 8-bit weight quantization.
 - **`qnn.QuantIdentity`**: For 8-bit activation quantization.
 
-### Outputs (in `quantization/` folder)
-- **`qat_pinn_model.pth`**: Trained model weights.
-- **`qat_pinn_model.qnnx`**: Exported quantized model (for FINN/hardware).
-- **`qat_z0_check.png`**: Initial pulse check ($z=0$).
-- **`qat_zL_comparison.png`**: Intensity waveform comparison at $z=L$.
-- **`qat_error_density.png`**: Error density heatmap.
+### Products & Performance Evaluation
+
+The execution of `qat_pinn.py` generates several key artifacts and visualizations located in the `quantization/` directory. These products serve to validate the Quantized PINN against the Split-Step Fourier Method (SSFM) benchmark—the same ground truth used for the standard Float32 PINN.
+
+#### Generated Files
+- **`qat_pinn_model.qnnx`**: The final Quantized Neural Network exported in QONNX format. This model is ready for deployment on FPGA accelerators (e.g., via AMD/Xilinx FINN), representing the core deliverable of the QAT process.
+- **`qat_pinn_model.pth`**: The PyTorch state dictionary containing the trained 8-bit weights and quantization thresholds.
+
+#### Performance Visualization (Plots)
+These plots illustrate the comparative performance of the QAT PINN against the SSFM ground truth, demonstrating that 8-bit quantization maintains solution fidelity.
+
+- **`qat_zL_comparison.png`**: A direct comparison of the pulse intensity at the final propagation distance ($z=L$). It plots the **QAT PINN prediction** (dashed line) against the **SSFM reference** (solid line) and effectively contrasts the quantized model's accuracy with the theoretical limit.
+- **`qat_error_density.png`**: A heatmap showing the normalized error density distribution over the entire spatiotemporal domain ($z$ vs. $t$). This highlights specific regions where the quantized model might deviate from the SSFM solution.
+- **`qat_z0_check.png`**: Verification of the initial condition ($z=0$), confirming that the quantized network correctly learns the starting Gaussian pulse profile.
