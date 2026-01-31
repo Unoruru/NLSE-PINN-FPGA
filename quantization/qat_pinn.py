@@ -9,11 +9,13 @@ import torch.nn as nn
 import matplotlib.pyplot as plt
 import scipy.ndimage as ndimage
 import os
+import sys
 
 # Try importing Brevitas
 try:
     import brevitas.nn as qnn
     from brevitas.quant import Int8WeightPerTensorFloat, Int8ActPerTensorFloat, Int8Bias
+    from brevitas.export import StdQCDQONNXManager, export_qonnx
 except ImportError:
     print("Error: Brevitas not found. Please install it using 'pip install brevitas'.")
     exit(1)
@@ -197,45 +199,47 @@ z_res = torch.rand(N_res, device=device) * L
 t_res = (torch.rand(N_res, device=device) * 2 - 1) * T_max 
 
 # Initialize QAT Model
-# Note: In a real scenario, we might load pretrained weights from the float model 
-# to speed up convergence. Here we train from scratch for simplicity as per original script.
 model = QuantPINN_NLSE(hidden_dim=50, layers=4).to(device)
-optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
-
-n_epochs = 2000 # Reduced for CLI session, original was 10000 
-
-print(f"Start QAT training for {n_epochs} epochs...")
-history = []
-
-for epoch in range(1, n_epochs + 1):
-    model.train()
-    optimizer.zero_grad()
-
-    # PDE residual loss
-    res_r, res_i = residual_pde(model, z_res, t_res, beta2, gamma)
-    loss_pde = torch.mean(res_r**2 + res_i**2)
-
-    # IC constraint loss
-    A_pred0 = model(z0, t_tensor)  
-    loss_ic = torch.mean((A_pred0[:, 0] - A0_real_t)**2 +
-                         (A_pred0[:, 1] - A0_imag_t)**2)
-
-    loss = loss_pde + loss_ic
-    loss.backward()
-    optimizer.step()
-
-    if epoch % 500 == 0:
-        print(f"Epoch {epoch}/{n_epochs}, Loss: {loss.item():.4e}, PDE: {loss_pde.item():.4e}, IC: {loss_ic.item():.4e}")
-        history.append(loss.item())
-
-print("QAT Finished.")
-
-# ======================
-# Save Model
-# ======================
 model_path = os.path.join("quantization", "qat_pinn_model.pth")
-torch.save(model.state_dict(), model_path)
-print(f"Quantized model saved to {model_path}")
+
+if os.path.exists(model_path):
+    print(f"Loading existing model from {model_path}...")
+    model.load_state_dict(torch.load(model_path, map_location=device))
+    print("Model loaded. Skipping training.")
+else:
+    optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
+    n_epochs = 2000 
+
+    print(f"Start QAT training for {n_epochs} epochs...")
+    history = []
+
+    for epoch in range(1, n_epochs + 1):
+        model.train()
+        optimizer.zero_grad()
+
+        # PDE residual loss
+        res_r, res_i = residual_pde(model, z_res, t_res, beta2, gamma)
+        loss_pde = torch.mean(res_r**2 + res_i**2)
+
+        # IC constraint loss
+        A_pred0 = model(z0, t_tensor)  
+        loss_ic = torch.mean((A_pred0[:, 0] - A0_real_t)**2 +
+                             (A_pred0[:, 1] - A0_imag_t)**2)
+
+        loss = loss_pde + loss_ic
+        loss.backward()
+        optimizer.step()
+
+        if epoch % 500 == 0:
+            print(f"Epoch {epoch}/{n_epochs}, Loss: {loss.item():.4e}, PDE: {loss_pde.item():.4e}, IC: {loss_ic.item():.4e}")
+            history.append(loss.item())
+
+    print("QAT Finished.")
+    # ======================
+    # Save Model
+    # ======================
+    torch.save(model.state_dict(), model_path)
+    print(f"Quantized model saved to {model_path}")
 
 # ======================
 # Evaluation & Plotting
@@ -289,7 +293,6 @@ plt.close()
 # Error Density
 err = np.abs(A_pred_complex - A_true)
 err_norm = err / np.max(err)
-# Simple smoothing if scipy is available, else skip
 try:
     err_norm_smooth = ndimage.gaussian_filter(err_norm, sigma=1.0)
     plt.figure(figsize=(6, 10))
@@ -305,3 +308,36 @@ try:
 except:
     print("Skipping smoothed error plot (scipy issue?)")
 
+# ======================
+# Export to QONNX / ONNX
+# ======================
+print("Exporting...")
+dummy_input = torch.randn(1, 2, device=device)
+try:
+    print("Attempting QONNX export (optimized for FINN)...")
+    export_path_qonnx = os.path.join("quantization", "qat_pinn_model.qnnx")
+    # Try passing dynamo=False to avoid tracing issues
+    try:
+        export_qonnx(model.net, args=dummy_input, export_path=export_path_qonnx, dynamo=False)
+        print(f"Model exported to {export_path_qonnx}")
+    except TypeError:
+         # If dynamo arg not supported, try without
+         export_qonnx(model.net, args=dummy_input, export_path=export_path_qonnx)
+         print(f"Model exported to {export_path_qonnx}")
+
+except Exception as e:
+    print(f"QONNX export failed: {e}")
+    print("Attempting Fallback: Standard QCDQ ONNX export...")
+    try:
+        export_path_onnx = os.path.join("quantization", "qat_pinn_model.onnx")
+        try:
+            StdQCDQONNXManager.export(model.net, args=dummy_input, export_path=export_path_onnx, dynamo=False)
+        except TypeError:
+            StdQCDQONNXManager.export(model.net, args=dummy_input, export_path=export_path_onnx)
+            
+        print(f"Model exported to {export_path_onnx} (Standard QCDQ ONNX)")
+        print("Note: This file contains standard QuantizeLinear/DequantizeLinear nodes.")
+    except Exception as e2:
+        print(f"All exports failed. Error: {e2}")
+        import traceback
+        traceback.print_exc()
