@@ -1,4 +1,4 @@
-## Project Structure
+## Branch Structure
 
 The project is organized into two main components:
 
