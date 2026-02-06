@@ -1,6 +1,9 @@
 # Script to convert qonnx/onnx file format to finn-onnx file format
 # Last updated: 05 Feb 2026
 
+# requires FINN
+# install by cloning git repository and running "pip install -e ." in the root directory of the repository
+
 from qonnx.util.cleanup import cleanup
 from qonnx.core.modelwrapper import ModelWrapper
 from finn.transformation.qonnx.convert_qonnx_to_finn import ConvertQONNXtoFINN
