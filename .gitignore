@@ -9,3 +9,6 @@ __pycache__/
 *.pth
 *.pt
 *.onnx
+
+# ignore new generated files
+quantization/quantization
