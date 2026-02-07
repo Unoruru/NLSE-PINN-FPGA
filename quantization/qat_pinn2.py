@@ -1,6 +1,13 @@
 """
 Quantization-Aware Training (QAT) for PINN NLSE using Brevitas.
 Based on software/pinn_2disp_kerr/PINN_2disp_kerr.py
+
+Install required packages:
+- pip install -r requirements.txt
+- pip install qonnx
+
+git clone FINN repository and cd into the root directory:
+- pip install -e .  # Install FINN
 """
 
 import numpy as np
@@ -346,11 +353,12 @@ except Exception as e:
 # ======================
 
 qonnx_path = "qat_pinn_model.qnnx"
-qonnx_clean_path = qonnx_path.replace(".qnnx", "_cleaned.qnnx")
+qonnx_clean_path = "quantization/" + qonnx_path.replace(".qnnx", "_cleaned.qnnx")
 
-cleanup(qonnx_path, out_file=qonnx_clean_path)
+cleanup("quantization/"+qonnx_path, out_file=qonnx_clean_path)
 
 model = ModelWrapper(qonnx_clean_path)
 model = model.transform(ConvertQONNXtoFINN())
-finn_onnx_path = "finn_" + qonnx_clean_path.replace("_cleaned.qnnx", ".onnx")
+finn_onnx_path = "quantization/finn_" + qonnx_clean_path.replace("_cleaned.qnnx", ".onnx")
 model.save(finn_onnx_path)
+print(f"Model converted to FINN format and exported as {finn_onnx_path}")
