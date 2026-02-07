@@ -315,6 +315,7 @@ except:
 # ======================
 print("Exporting...")
 model.eval()
+opset_version = 11
 
 dummy_input = torch.randn(1, 2, device=device)
 try:
@@ -322,31 +323,16 @@ try:
     export_path_qonnx = os.path.join("quantization", "qat_pinn_model.qnnx")
     # Try passing dynamo=False to avoid tracing issues
     try:
-        export_qonnx(model.net, args=dummy_input, export_path=export_path_qonnx, dynamo=False)
+        export_qonnx(model.net, args=dummy_input, export_path=export_path_qonnx, dynamo=False, opset_version=opset_version)
         print(f"Model exported to {export_path_qonnx}")
     except TypeError:
          # If dynamo arg not supported, try without
-         export_qonnx(model.net, args=dummy_input, export_path=export_path_qonnx)
+         export_qonnx(model.net, args=dummy_input, export_path=export_path_qonnx, opset_version=opset_version)
          print(f"Model exported to {export_path_qonnx}")
 
 except Exception as e:
     print(f"QONNX export failed: {e}")
     exit()
-    # print("Attempting Fallback: Standard QCDQ ONNX export...")
-    # try:
-    #     export_path_onnx = os.path.join("quantization", "qat_pinn_model.onnx")
-    #     try:
-    #         StdQCDQONNXManager.export(model.net, args=dummy_input, export_path=export_path_onnx, dynamo=False)
-    #     except TypeError:
-    #         StdQCDQONNXManager.export(model.net, args=dummy_input, export_path=export_path_onnx)
-            
-    #     print(f"Model exported to {export_path_onnx} (Standard QCDQ ONNX)")
-    #     print("Note: This file contains standard QuantizeLinear/DequantizeLinear nodes.")
-    # except Exception as e2:
-    #     print(f"All exports failed. Error: {e2}")
-    #     import traceback
-    #     traceback.print_exc()
-
 
 # ======================
 # Convert to FINN format
@@ -359,6 +345,6 @@ cleanup("quantization/"+qonnx_path, out_file=qonnx_clean_path)
 
 model = ModelWrapper(qonnx_clean_path)
 model = model.transform(ConvertQONNXtoFINN())
-finn_onnx_path = "quantization/finn_" + qonnx_clean_path.replace("_cleaned.qnnx", ".onnx")
+finn_onnx_path = "quantization/finn_" + qonnx_path.replace(".qnnx", ".onnx")
 model.save(finn_onnx_path)
 print(f"Model converted to FINN format and exported as {finn_onnx_path}")
