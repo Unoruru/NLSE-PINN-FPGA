@@ -22,6 +22,10 @@ from qonnx.util.cleanup import cleanup
 from qonnx.core.modelwrapper import ModelWrapper
 from finn.transformation.qonnx.convert_qonnx_to_finn import ConvertQONNXtoFINN
 
+from finn.transformation.fpgadataflow.convert_to_hw_layers import InferQuantizedMatrixVectorActivation
+from finn.transformation.streamline import Streamline
+from qonnx.transformation.general import GiveUniqueNodeNames
+
 # Try importing Brevitas
 try:
     import brevitas.nn as qnn
@@ -348,3 +352,13 @@ model = model.transform(ConvertQONNXtoFINN())
 finn_onnx_path = "quantization/finn_" + qonnx_path.replace(".qnnx", ".onnx")
 model.save(finn_onnx_path)
 print(f"Model converted to FINN format and exported as {finn_onnx_path}")
+
+
+# ======================
+# Prepare for FINN HLS export
+# ======================
+
+# model = model.transform(Streamline())              # Removes floating point "clutter"
+model = model.transform(InferQuantizedMatrixVectorActivation()) # Math -> Hardware Nodes
+model = model.transform(GiveUniqueNodeNames())     # Names nodes for your JSON config
+model.save("quantization/model.onnx")
