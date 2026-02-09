@@ -3,6 +3,15 @@ PINN for NLSE with second-order dispersion and kerr non-linear
 
 - By employing the normalized equation: A_z = i * (beta2/2) * A_tt + i * gamma * abs(A)**2 * A
 
+DEPRECATED: This script is superseded by software/train_fp32.py which adds:
+  - Reproducibility seeds
+  - Input normalization (z, t -> [-1, 1])
+  - CosineAnnealing LR scheduler
+  - Adaptive loss weighting, collocation resampling, gradient clipping
+  - Validation against SSFM + best model checkpointing
+  - Modular code in shared/ for reuse by QAT pipeline
+
+Usage:  python software/train_fp32.py
 """
 
 import numpy as np
