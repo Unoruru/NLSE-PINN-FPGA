@@ -9,3 +9,6 @@ __pycache__/
 *.pth
 *.pt
 *.onnx
+
+# Ignore .gemini files
+*.gemini
