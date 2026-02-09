@@ -123,24 +123,29 @@ class QuantPINN_NLSE(nn.Module):
             # Input Layer
             qnn.QuantLinear(2, hidden_dim, bias=True, 
                             weight_bit_width=weight_bit_width,
+                            act_quant=Int8ActPerTensorFloat,
                             bias_quant=Int8Bias,
                             return_quant_tensor=True),
-            nn.Tanh(),
+            # nn.Tanh(),
+            qnn.QuantTanh(bit_width=act_bit_width, return_quant_tensor=True),
 
             # Hidden Layers
             *[nn.Sequential(
                 qnn.QuantIdentity(bit_width=act_bit_width, return_quant_tensor=True),
                 qnn.QuantLinear(hidden_dim, hidden_dim, bias=True, 
                                 weight_bit_width=weight_bit_width,
+                                act_quant=Int8ActPerTensorFloat,
                                 bias_quant=Int8Bias,
                                 return_quant_tensor=True),
-                nn.Tanh()
+                # nn.Tanh()
+                qnn.QuantTanh(bit_width=act_bit_width, return_quant_tensor=True)
             ) for _ in range(layers - 1)],
 
             # Output Layer
             qnn.QuantIdentity(bit_width=act_bit_width, return_quant_tensor=True),
             qnn.QuantLinear(hidden_dim, 2, bias=True, 
                              weight_bit_width=weight_bit_width,
+                             act_quant=Int8ActPerTensorFloat,
                              bias_quant=Int8Bias,
                              return_quant_tensor=False)
 
