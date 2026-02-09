@@ -7,3 +7,4 @@
 
 2026 Feb 09:
     * https://netron.app/ visualisation see element not quantised, need fix
+    * https://pypi.org/project/brevitas/0.5.1/
