@@ -12,3 +12,6 @@ __pycache__/
 
 # ignore new generated files
 quantization/quantization
+
+# Ignore Agents directory
+*.gemini
