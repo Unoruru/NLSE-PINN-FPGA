@@ -354,6 +354,6 @@ cleanup("quantization/"+qonnx_path, out_file=qonnx_clean_path)
 
 model = ModelWrapper(qonnx_clean_path)
 model = model.transform(ConvertQONNXtoFINN())
-finn_onnx_path = "quantization/model.onxx"
+finn_onnx_path = "quantization/model.onnx"
 model.save(finn_onnx_path)
 print(f"Model converted to FINN format and exported as {finn_onnx_path}")
