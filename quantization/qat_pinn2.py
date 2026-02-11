@@ -22,10 +22,6 @@ from qonnx.util.cleanup import cleanup
 from qonnx.core.modelwrapper import ModelWrapper
 from finn.transformation.qonnx.convert_qonnx_to_finn import ConvertQONNXtoFINN
 
-from finn.transformation.fpgadataflow.convert_to_hw_layers import InferQuantizedMatrixVectorActivation
-from finn.transformation.streamline import Streamline
-from qonnx.transformation.general import GiveUniqueNodeNames
-
 # Try importing Brevitas
 try:
     import brevitas.nn as qnn
@@ -111,10 +107,6 @@ class QuantPINN_NLSE(nn.Module):
     def __init__(self, hidden_dim=50, layers=4, weight_bit_width=8, act_bit_width=8):
         super().__init__()
         
-        # We construct the network as a list of modules
-        # Note: We use QuantIdentity for activation quantization before linear layers
-        # where appropriate. 
-        
         self.net = nn.Sequential(
 
             # Input Quantization
@@ -127,7 +119,8 @@ class QuantPINN_NLSE(nn.Module):
                             bias_quant=Int8Bias,
                             return_quant_tensor=True),
             # nn.Tanh(),
-            qnn.QuantTanh(bit_width=act_bit_width, return_quant_tensor=True),
+            qnn.QuantHardTanh(bit_width=act_bit_width, max_val=1.0, min_val=-1.0, return_quant_tensor=True),
+            # qnn.QuantIdentity(bit_width=act_bit_width, return_quant_tensor=True),
 
             # Hidden Layers
             *[nn.Sequential(
@@ -137,8 +130,9 @@ class QuantPINN_NLSE(nn.Module):
                                 act_quant=Int8ActPerTensorFloat,
                                 bias_quant=Int8Bias,
                                 return_quant_tensor=True),
-                # nn.Tanh()
-                qnn.QuantTanh(bit_width=act_bit_width, return_quant_tensor=True)
+                # nn.Tanh(),
+                qnn.QuantHardTanh(bit_width=act_bit_width, max_val=1.0, min_val=-1.0, return_quant_tensor=True),
+                # qnn.QuantIdentity(bit_width=act_bit_width, return_quant_tensor=True),
             ) for _ in range(layers - 1)],
 
             # Output Layer
@@ -157,26 +151,51 @@ class QuantPINN_NLSE(nn.Module):
         if t.dim() == 1:
             t = t.unsqueeze(1)
         x = torch.cat([z, t], dim=1)  # [N,2]
-        # Run through network and extract the float value from the final QuantTensor
-        return self.net(x)
+
+        out = self.net(x)
+        
+        if hasattr(out, 'value'):
+            return out.value
+        else:
+            return out
 
 # ======================
 # Physics Loss
 # ======================
 def gradients(y, x):
-    return torch.autograd.grad(
+    
+    grad = torch.autograd.grad(
         y, x,
         grad_outputs=torch.ones_like(y),
         create_graph=True,
+        allow_unused=True
     )[0]
+
+    if grad is None:
+        return torch.zeros_like(y)
+    else:
+        return grad
+
+    # return torch.autograd.grad(
+    #     y, x,
+    #     grad_outputs=torch.ones_like(y),
+    #     create_graph=True,
+    # )[0]
 
 def residual_pde(model, z, t, beta2, gamma):
     z = z.clone().detach().requires_grad_(True)
     t = t.clone().detach().requires_grad_(True)
 
     out = model(z, t)      # [N,2]
-    u = out[:, 0]
-    v = out[:, 1]
+    # u = out[:, 0]
+    # v = out[:, 1]
+
+    if hasattr(out, 'value'):
+        u = out.value[:, 0]
+        v = out.value[:, 1]
+    else:
+        u = out[:, 0]
+        v = out[:, 1]
 
     u_z = gradients(u, z)
     v_z = gradients(v, z)
@@ -214,6 +233,7 @@ model = QuantPINN_NLSE(hidden_dim=50, layers=4).to(device)
 model_path = os.path.join("quantization", "qat_pinn_model.pth")
 
 if os.path.exists(model_path):
+    device = torch.device("cpu")  # Load on CPU to avoid GPU memory issues
     print(f"Loading existing model from {model_path}...")
     model.load_state_dict(torch.load(model_path, map_location=device))
     print("Model loaded. Skipping training.")
