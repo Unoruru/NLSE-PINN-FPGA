@@ -2,7 +2,7 @@
 Quantization-Aware Training (QAT) for PINN NLSE using Brevitas.
 
 Usage:
-    python train_qat.py --fp32-checkpoint ../software/fp32_pinn_best.pth
+    python train_qat.py --fp32-checkpoint ../software/fp32_pinn_best.pth [--bit-width 4|8|16]
 
 Improvements over qat_pinn.py:
   - Loads pretrained FP32 weights (standard QAT pipeline)
@@ -41,14 +41,14 @@ except ImportError:
     sys.exit(1)
 
 
-def export_model(model, device, export_dir):
+def export_model(model, device, export_dir, bit_tag="8bit"):
     """Export quantized model to QONNX and fallback to ONNX."""
     dummy_input = torch.randn(1, 2, device=device)
 
     # Try QONNX first (optimized for FINN)
     try:
         print("Attempting QONNX export (optimized for FINN)...")
-        qonnx_path = os.path.join(export_dir, "qat_pinn_model.qonnx")
+        qonnx_path = os.path.join(export_dir, f"qat_{bit_tag}_pinn_model.qonnx")
         try:
             export_qonnx(model.net, args=dummy_input, export_path=qonnx_path, dynamo=False)
         except TypeError:
@@ -61,7 +61,7 @@ def export_model(model, device, export_dir):
     # Fallback: Standard QCDQ ONNX
     try:
         print("Attempting Standard QCDQ ONNX export...")
-        onnx_path = os.path.join(export_dir, "qat_pinn_model.onnx")
+        onnx_path = os.path.join(export_dir, f"qat_{bit_tag}_pinn_model.onnx")
         try:
             StdQCDQONNXManager.export(model.net, args=dummy_input, export_path=onnx_path, dynamo=False)
         except TypeError:
@@ -77,11 +77,18 @@ def main():
     parser = argparse.ArgumentParser(description="QAT fine-tuning for PINN NLSE")
     parser.add_argument("--fp32-checkpoint", type=str, default=None,
                         help="Path to pretrained FP32 model (fp32_pinn_best.pth)")
+    parser.add_argument("--bit-width", type=int, choices=[4, 8, 16], default=8,
+                        help="Quantization bit width for weights and activations (default: 8)")
     args = parser.parse_args()
 
     cfg = PINNConfig()
+    cfg.weight_bit_width = args.bit_width
+    cfg.act_bit_width = args.bit_width
+    bit_tag = f"{args.bit_width}bit"
+
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f"Using device: {device}")
+    print(f"Quantization: {args.bit_width}-bit weights and activations")
 
     # --- Reproducibility ---
     set_seed(cfg.seed)
@@ -132,7 +139,7 @@ def main():
 
     # --- Training ---
     export_dir = os.path.dirname(__file__)
-    save_path = os.path.join(export_dir, "qat_pinn_best.pth")
+    save_path = os.path.join(export_dir, f"qat_{bit_tag}_pinn_best.pth")
 
     history = train_pinn(
         model, optimizer, scheduler, qat_cfg, t, A0, A_true_at_L, device,
@@ -148,14 +155,14 @@ def main():
     print_summary(t, A_true, A_pred)
 
     # --- Plots ---
-    plot_loss_curves(history, save_path=os.path.join(export_dir, "qat_loss_curves.png"))
-    plot_z0_check(t, A0, A_pred, save_path=os.path.join(export_dir, "qat_z0_check.png"))
-    plot_zL_comparison(t, A_true, A_pred, save_path=os.path.join(export_dir, "qat_zL_comparison.png"), label="QAT PINN")
-    plot_error_heatmap(t, z_points, cfg.L, A_true, A_pred, save_path=os.path.join(export_dir, "qat_abs_error.png"))
-    plot_error_density(t, z_points, cfg.L, A_true, A_pred, save_path=os.path.join(export_dir, "qat_error_density.png"))
+    plot_loss_curves(history, save_path=os.path.join(export_dir, f"qat_{bit_tag}_loss_curves.png"))
+    plot_z0_check(t, A0, A_pred, save_path=os.path.join(export_dir, f"qat_{bit_tag}_z0_check.png"))
+    plot_zL_comparison(t, A_true, A_pred, save_path=os.path.join(export_dir, f"qat_{bit_tag}_zL_comparison.png"), label=f"QAT PINN ({bit_tag})")
+    plot_error_heatmap(t, z_points, cfg.L, A_true, A_pred, save_path=os.path.join(export_dir, f"qat_{bit_tag}_abs_error.png"))
+    plot_error_density(t, z_points, cfg.L, A_true, A_pred, save_path=os.path.join(export_dir, f"qat_{bit_tag}_error_density.png"))
 
     # --- Export ---
-    export_model(model, device, export_dir)
+    export_model(model, device, export_dir, bit_tag=bit_tag)
     print("\nDone.")
 
 

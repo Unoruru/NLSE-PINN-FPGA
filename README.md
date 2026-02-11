@@ -1,6 +1,6 @@
-# PINN for Nonlinear Schrodinger Equation with INT8 Quantization-Aware Training
+# PINN for Nonlinear Schrodinger Equation with Configurable Quantization-Aware Training (4/8/16-bit)
 
-Physics-Informed Neural Network (PINN) that solves the Nonlinear Schrodinger Equation (NLSE) with second-order dispersion and Kerr nonlinearity, then quantizes the trained model to INT8 via Quantization-Aware Training (QAT) for FPGA deployment.
+Physics-Informed Neural Network (PINN) that solves the Nonlinear Schrodinger Equation (NLSE) with second-order dispersion and Kerr nonlinearity, then quantizes the trained model to configurable 4-bit, 8-bit, or 16-bit precision via Quantization-Aware Training (QAT) for FPGA deployment.
 
 ## Physics Background
 
@@ -64,10 +64,17 @@ Trains a standard float32 PINN from scratch using SSFM ground truth. Saves the b
 ### Step 2 — QAT Fine-Tuning
 
 ```bash
+# 8-bit (default)
 python quantization/train_qat.py --fp32-checkpoint software/fp32_pinn_best.pth
+
+# 4-bit
+python quantization/train_qat.py --fp32-checkpoint software/fp32_pinn_best.pth --bit-width 4
+
+# 16-bit
+python quantization/train_qat.py --fp32-checkpoint software/fp32_pinn_best.pth --bit-width 16
 ```
 
-Loads the pretrained FP32 weights into an INT8 quantized model (Brevitas), fine-tunes with the same physics-informed loss, and exports a `.qonnx` file for FPGA synthesis (e.g., AMD/Xilinx FINN).
+Loads the pretrained FP32 weights into a quantized model (Brevitas) at the specified bit width (4, 8, or 16), fine-tunes with the same physics-informed loss, and exports a `.qonnx` file for FPGA synthesis (e.g., AMD/Xilinx FINN). The `--bit-width` flag controls both weight and activation quantization precision (default: 8).
 
 ## Architecture
 
@@ -85,10 +92,11 @@ Input (z, t) → [Linear 2→50] → Tanh → [Linear 50→50] → Tanh
 
 ### QAT Model (`QuantPINN_NLSE` in `quantization/qat_model.py`)
 
-Same architecture with Brevitas quantization layers:
-- `QuantIdentity` (8-bit) before each `QuantLinear`
-- `QuantLinear` (8-bit weights, 8-bit bias via `Int8Bias`, `return_quant_tensor=False`)
+Same architecture with Brevitas quantization layers at configurable bit width:
+- `QuantIdentity` (N-bit activations) before each `QuantLinear`
+- `QuantLinear` (N-bit weights, bias quantized via `BIAS_QUANT_MAP`: `Int8Bias` for 4/8-bit, `Int32Bias` for 16-bit)
 - Standard `nn.Tanh()` between layers (operates on float tensors)
+- Bit width is set by the `--bit-width` CLI flag (4, 8, or 16)
 
 FP32 weights are transferred via `load_fp32_into_qat()`, which maps the sequential index-based keys to named layer keys.
 
@@ -129,8 +137,8 @@ All hyperparameters are centralized in `shared/config.py` as a `PINNConfig` data
 | `grad_clip_norm` | `1.0` | Max gradient norm |
 | `qat_epochs` | `1000` | QAT fine-tuning epochs |
 | `qat_lr` | `5e-4` | QAT initial learning rate |
-| `weight_bit_width` | `8` | Quantized weight bit-width |
-| `act_bit_width` | `8` | Quantized activation bit-width |
+| `weight_bit_width` | `8` | Quantized weight bit-width (set via `--bit-width`: 4, 8, or 16) |
+| `act_bit_width` | `8` | Quantized activation bit-width (set via `--bit-width`: 4, 8, or 16) |
 | `seed` | `42` | Random seed |
 
 ## Outputs
@@ -148,15 +156,17 @@ All hyperparameters are centralized in `shared/config.py` as a `PINNConfig` data
 
 ### `quantization/train_qat.py`
 
+All QAT output filenames include the bit-width prefix `qat_{N}bit_*`, where `{N}` is the value of `--bit-width` (default 8).
+
 | File | Description |
 |---|---|
-| `qat_pinn_best.pth` | Best QAT model checkpoint |
-| `qat_pinn_model.qonnx` | Exported QONNX model for FPGA (FINN-compatible) |
-| `qat_loss_curves.png` | QAT training loss and LR schedule |
-| `qat_z0_check.png` | Initial condition check |
-| `qat_zL_comparison.png` | QAT PINN vs SSFM at `z=L` |
-| `qat_abs_error.png` | Absolute error heatmap |
-| `qat_error_density.png` | Normalized error density heatmap |
+| `qat_{N}bit_pinn_best.pth` | Best QAT model checkpoint |
+| `qat_{N}bit_pinn_model.qonnx` | Exported QONNX model for FPGA (FINN-compatible) |
+| `qat_{N}bit_loss_curves.png` | QAT training loss and LR schedule |
+| `qat_{N}bit_z0_check.png` | Initial condition check |
+| `qat_{N}bit_zL_comparison.png` | QAT PINN vs SSFM at `z=L` |
+| `qat_{N}bit_abs_error.png` | Absolute error heatmap |
+| `qat_{N}bit_error_density.png` | Normalized error density heatmap |
 
 ## Legacy Scripts
 

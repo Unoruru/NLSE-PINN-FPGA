@@ -10,7 +10,13 @@ Key changes from original qat_pinn.py:
 import torch
 import torch.nn as nn
 import brevitas.nn as qnn
-from brevitas.quant import Int8Bias
+from brevitas.quant import Int8Bias, Int32Bias
+
+BIAS_QUANT_MAP = {
+    4: Int8Bias,
+    8: Int8Bias,
+    16: Int32Bias,
+}
 
 
 class QuantPINN_NLSE(nn.Module):
@@ -22,6 +28,8 @@ class QuantPINN_NLSE(nn.Module):
     def __init__(self, hidden_dim=50, layers=4, weight_bit_width=8, act_bit_width=8):
         super().__init__()
 
+        bias_quant = BIAS_QUANT_MAP.get(weight_bit_width, Int8Bias)
+
         self.net = nn.Sequential()
 
         # Input quantization
@@ -32,7 +40,7 @@ class QuantPINN_NLSE(nn.Module):
         self.net.add_module("layer1", qnn.QuantLinear(
             2, hidden_dim, bias=True,
             weight_bit_width=weight_bit_width,
-            bias_quant=Int8Bias,
+            bias_quant=bias_quant,
             return_quant_tensor=False))
         self.net.add_module("act1", nn.Tanh())
 
@@ -43,7 +51,7 @@ class QuantPINN_NLSE(nn.Module):
             self.net.add_module(f"layer{i+2}", qnn.QuantLinear(
                 hidden_dim, hidden_dim, bias=True,
                 weight_bit_width=weight_bit_width,
-                bias_quant=Int8Bias,
+                bias_quant=bias_quant,
                 return_quant_tensor=False))
             self.net.add_module(f"act{i+2}", nn.Tanh())
 
@@ -53,7 +61,7 @@ class QuantPINN_NLSE(nn.Module):
         self.net.add_module("layer_out", qnn.QuantLinear(
             hidden_dim, 2, bias=True,
             weight_bit_width=weight_bit_width,
-            bias_quant=Int8Bias,
+            bias_quant=bias_quant,
             return_quant_tensor=False))
 
     def forward(self, z, t):
