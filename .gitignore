@@ -15,3 +15,7 @@ quantization/quantization
 
 # Ignore Agents directory
 *.gemini/
+
+# Ignore conversion folder except script
+qonnx2finn/*
+!qonnx2finn/qonnx2finn.py
