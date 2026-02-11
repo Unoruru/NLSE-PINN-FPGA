@@ -1,10 +1,7 @@
-# current issues
+# remarks on qat training for hardware deployment (lu: 11 Feb 2026)
 
-2026 Feb 08:
-    Using qat_pinn2.py:
-    * AssertionError: cycle-free graph violated: partition depends on itself
-    * @ Running step: step_create_dataflow_partition [5/19]
-
-2026 Feb 09:
-    * https://netron.app/ visualisation see element not quantised, need fix
-    * https://pypi.org/project/brevitas/0.5.1/
+* Cannot use nn.tanh/qnn.quanttanh as FINN is unable to convert these layers to hw
+* Use quanthardtanh instead, which is translated to regular blocks rather than specialised tanh blocks
+* quanthardtanh limits set to max=1.0 and min=-1.0, may lead to empty/unused autograds
+* hence, must set autograd to output zeros when none
+* leads to reduced accuracy compared to normal tanh due to loss of gradients
