@@ -60,7 +60,10 @@ def main():
 
     # print(input_path, args.input, args.output) # debug only
 
-    conv2finn(input_path, args.input, args.output)
-
+    try:
+        conv2finn(input_path, args.input, args.output)
+    except Exception as e:
+        print(f"Error during conversion: {e}")
+        
 if __name__ == "__main__":
     main()
