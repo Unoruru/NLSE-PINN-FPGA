@@ -4,7 +4,7 @@
 # Install prerequisites using "pip install -r req.txt"
 
 # Usage:
-# Call "python qonnx2finn.py" with/without arguments.
+# Call "python qonnx2finn.py" with arguments (--i is required).
 
 # Arguments:
 # --dir:    directory of the folder containing .qonnx/.qnnx/.onnx model export, relative to current working directory. override with full path.
@@ -40,7 +40,7 @@ def conv2finn(dir_path, qonnx_name, output_name):
 
 
 def main():
-    parse = argparse.ArgumentParser(description="QONNX to FINN-ONXX Converter")
+    parse = argparse.ArgumentParser(description="QONNX to FINN-ONNX Converter")
     parse.add_argument("--dir", "--d", type=str, default=os.getcwd(), help="Path to Folder Containing QONNX Model")
     parse.add_argument("--input", "--i", type=str, default="", help="File Name of QONNX Model for Conversion (include .qonnx/.qnnx/.onnx)")
     parse.add_argument("--output", "--o", type=str, default="model.onnx", help="File Name of FINN-ONNX File Output (include .onnx)")
