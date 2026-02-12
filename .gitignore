@@ -12,12 +12,10 @@ __pycache__/
 *.qonnx
 *.qnnx
 
-# ignore new generated files
-quantization/quantization
-
 # Ignore Agents directory
 *.gemini/
 
-# Ignore conversion folder except script
+# Ignore conversion folder except script and req
 qonnx2finn/*
 !qonnx2finn/qonnx2finn.py
+!qonnx2finn/req.txt
