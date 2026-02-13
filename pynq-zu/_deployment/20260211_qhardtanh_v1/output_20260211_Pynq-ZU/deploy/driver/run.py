@@ -39,7 +39,6 @@ def main():
     parser = argparse.ArgumentParser(description="Run FINN overlay on PYNQ-ZU (or summarize inputs).")
     default_bit = (
         Path(__file__).resolve().parents[1]
-        / "output_20260211_Pynq-ZU"
         / "bitfile"
         / "finn-accel.bit"
     )
@@ -48,7 +47,7 @@ def main():
     parser.add_argument("--runtime-weight-dir", default="runtime_weights/", help="runtime weights folder")
     parser.add_argument("--pickle", default="ssfm_results.pkl", help="optional pickle file to load and inspect")
     parser.add_argument("--input-npy", nargs="*", help="optional input .npy files to run on accelerator")
-    parser.add_argument("--throughput-test", action="store_true", help="run throughput_test() instead of executing inputs")
+    parser.add_argument("--throughput-test", action="store_true", default=True, help="run throughput_test() instead of executing inputs")
     args = parser.parse_args()
 
     logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
