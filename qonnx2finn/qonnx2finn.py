@@ -44,26 +44,27 @@ def main():
     parse.add_argument("--dir", "--d", type=str, default=os.getcwd(), help="Path to Folder Containing QONNX Model")
     parse.add_argument("--input", "--i", type=str, default="", help="File Name of QONNX Model for Conversion (include .qonnx/.qnnx/.onnx)")
     parse.add_argument("--output", "--o", type=str, default="model.onnx", help="File Name of FINN-ONNX File Output (include .onnx)")
-    
+    parse.add_argument("--debug", type=bool, default=False, help="Enable Debug Mode (disables conversion and prints provided arguments)")
+
     args = parse.parse_args()
-
-    assert os.path.isdir(args.dir), "Provided directory is invalid"
-    assert args.input != "", "Specify model file name for conversion."
-
     input_path = os.path.join(os.getcwd(), args.dir)
+
+    assert os.path.isdir(input_path), "Provided directory does not exist."
+    
+    assert args.input != "", "Specify input model file name for conversion."
     assert os.path.isfile(os.path.join(input_path, args.input)), "Input file does not exist."
 
     assert (args.input[-5:] == ".onnx" or args.input[-5:] == ".qnnx" or args.input[-6:] == ".qonnx"), "Input path extension must be one of: .onnx/.qnnx/.qonnx."
 
     assert args.output[-5:] == ".onnx", "Output path extension must be .onnx."
 
-
-    # print(input_path, args.input, args.output) # debug only
-
-    try:
-        conv2finn(input_path, args.input, args.output)
-    except Exception as e:
-        print(f"Error during conversion: {e}")
+    if args.debug:
+        print(input_path, args.input, args.output) # debug only
+    else:
+        try:
+            conv2finn(input_path, args.input, args.output)
+        except Exception as e:
+            print(f"Error during conversion: {e}")
         
 if __name__ == "__main__":
     main()
