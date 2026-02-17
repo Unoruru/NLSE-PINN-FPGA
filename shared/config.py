@@ -36,9 +36,12 @@ class PINNConfig:
     lambda_ic_update_every: int = 100  # adaptive loss weight update interval
 
     # --- Training (QAT) ---
-    qat_epochs: int = 1000
+    qat_epochs: int = 3000
     qat_lr: float = 5e-4
     qat_lr_min: float = 1e-6
+    qat_warmup_epochs: int = 500
+    qat_N_res: int = 15000
+    qat_ic_boost_factor: float = 2.0
     weight_bit_width: int = 8
     act_bit_width: int = 8
 

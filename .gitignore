@@ -12,3 +12,5 @@ __pycache__/
 
 # Ignore .gemini files
 *.gemini
+
+nul

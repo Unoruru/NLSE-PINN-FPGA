@@ -3,8 +3,9 @@ Quantized PINN model using Brevitas for NLSE.
 
 Key changes from original qat_pinn.py:
   - Removed Unwrap modules: use return_quant_tensor=False on QuantLinear instead
-  - QuantLinear(return_quant_tensor=False) -> Tanh -> QuantIdentity(return_quant_tensor=True)
-  - Cleaner graph, less quantization noise, better ONNX export
+  - QuantLinear(return_quant_tensor=False) -> QuantHardTanh(return_quant_tensor=True)
+  - QuantHardTanh fuses activation + requantization into one FINN-synthesizable node
+  - Cleaner graph, fully quantized, FINN-compatible
 """
 
 import torch
@@ -36,28 +37,28 @@ class QuantPINN_NLSE(nn.Module):
         self.net.add_module("input_quant", qnn.QuantIdentity(
             bit_width=act_bit_width, return_quant_tensor=True))
 
-        # Layer 1: QuantLinear returns float (not QuantTensor) -> Tanh works directly
+        # Layer 1: QuantLinear -> QuantHardTanh (fused activation + requantization)
         self.net.add_module("layer1", qnn.QuantLinear(
             2, hidden_dim, bias=True,
             weight_bit_width=weight_bit_width,
             bias_quant=bias_quant,
             return_quant_tensor=False))
-        self.net.add_module("act1", nn.Tanh())
+        self.net.add_module("act1", qnn.QuantHardTanh(
+            bit_width=act_bit_width, min_val=-1.0, max_val=1.0,
+            return_quant_tensor=True))
 
         # Hidden layers
         for i in range(layers - 1):
-            self.net.add_module(f"quant_act_{i+2}", qnn.QuantIdentity(
-                bit_width=act_bit_width, return_quant_tensor=True))
             self.net.add_module(f"layer{i+2}", qnn.QuantLinear(
                 hidden_dim, hidden_dim, bias=True,
                 weight_bit_width=weight_bit_width,
                 bias_quant=bias_quant,
                 return_quant_tensor=False))
-            self.net.add_module(f"act{i+2}", nn.Tanh())
+            self.net.add_module(f"act{i+2}", qnn.QuantHardTanh(
+                bit_width=act_bit_width, min_val=-1.0, max_val=1.0,
+                return_quant_tensor=True))
 
-        # Output layer
-        self.net.add_module("quant_act_out", qnn.QuantIdentity(
-            bit_width=act_bit_width, return_quant_tensor=True))
+        # Output layer (no activation — raw linear output)
         self.net.add_module("layer_out", qnn.QuantLinear(
             hidden_dim, 2, bias=True,
             weight_bit_width=weight_bit_width,

@@ -72,7 +72,7 @@ def validate_against_ssfm(model, t, A_true_at_L, L, T_max, device):
 
 
 def train_pinn(model, optimizer, scheduler, cfg, t, A0, A_true_at_L, device,
-               save_path="fp32_pinn_best.pth"):
+               save_path="fp32_pinn_best.pth", ic_boost_factor=1.0, ic_boost_epochs=0):
     """
     Full training loop with all improvements:
     - Adaptive loss weighting
@@ -132,6 +132,10 @@ def train_pinn(model, optimizer, scheduler, cfg, t, A0, A_true_at_L, device,
             with torch.no_grad():
                 if loss_ic.item() > 1e-12:
                     lambda_ic = loss_pde.item() / loss_ic.item()
+
+        # IC boost during warmup phase (for QAT accuracy recovery)
+        if epoch <= ic_boost_epochs and ic_boost_factor > 1.0:
+            lambda_ic *= ic_boost_factor
 
         # Collocation resampling
         if epoch % cfg.resample_every == 0:
