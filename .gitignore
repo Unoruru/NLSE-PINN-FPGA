@@ -14,3 +14,13 @@ __pycache__/
 *.gemini
 
 nul
+*.qonnx
+*.qnnx
+
+# Ignore Agents directory
+*.gemini/
+
+# Ignore conversion folder except script and req
+qonnx2finn/*
+!qonnx2finn/qonnx2finn.py
+!qonnx2finn/req.txt
