@@ -1,6 +1,14 @@
 """
 Quantization-Aware Training (QAT) for PINN NLSE using Brevitas.
 Based on software/pinn_2disp_kerr/PINN_2disp_kerr.py
+
+DEPRECATED: This script is superseded by quantization/train_qat.py which adds:
+  - FP32 pretrained weight loading (standard QAT pipeline)
+  - Input normalization, LR scheduling, adaptive loss weighting
+  - Removed Unwrap modules (cleaner QuantLinear -> Tanh -> QuantIdentity chain)
+  - Validation against SSFM + best model checkpointing
+
+Usage:  python quantization/train_qat.py --fp32-checkpoint software/fp32_pinn_best.pth
 """
 
 import numpy as np
