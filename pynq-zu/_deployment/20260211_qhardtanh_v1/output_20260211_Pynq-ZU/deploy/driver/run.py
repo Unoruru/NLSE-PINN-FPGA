@@ -4,12 +4,35 @@
 # Note: This script is intended to be run on the PYNQ-ZU board itself, and assumes that the driver files (driver.py, driver_base.py) are present in the same directory.
 
 import argparse
+import csv
 import logging
 import sys
 from pathlib import Path
 
 import numpy as np
 import pypickle
+
+SCRIPT_DIR = Path(__file__).resolve().parent
+
+
+def save_results_csv(data, filename, output_dir=SCRIPT_DIR):
+    """Save inference results as CSV next to this script."""
+    filepath = output_dir / filename
+    with filepath.open("w", newline="") as f:
+        writer = csv.writer(f)
+        if isinstance(data, dict):
+            writer.writerow(["Metric", "Value"])
+            for key, value in data.items():
+                writer.writerow([key, value])
+        elif isinstance(data, np.ndarray):
+            if data.ndim == 1:
+                writer.writerow([f"col_{j}" for j in range(data.shape[0])])
+                writer.writerow(data.tolist())
+            else:
+                writer.writerow([f"col_{j}" for j in range(data.shape[-1])])
+                for row in data.reshape(-1, data.shape[-1]):
+                    writer.writerow(row.tolist())
+    logging.info("Saved CSV to %s", filepath)
 
 # attempt to import driver artifacts (they should be present next to this script)
 try:
@@ -98,6 +121,8 @@ def main():
         logging.info("Running throughput test...")
         res = driver.throughput_test()
         logging.info("Throughput results: %s", res)
+        if isinstance(res, dict):
+            save_results_csv(res, "throughput_results.csv")
         return
 
     # if .npy inputs specified, run execute
@@ -118,6 +143,7 @@ def main():
             outp = Path(args.input_npy[0]).parent / f"output_{i}.npy"
             np.save(outp, out)
             logging.info("Saved output to %s", outp)
+            save_results_csv(out, f"output_{i}.csv")
     else:
         logging.info("No .npy inputs provided and --throughput-test not set. Exiting after initialization.")
 
