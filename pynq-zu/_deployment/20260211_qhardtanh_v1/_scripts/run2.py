@@ -70,7 +70,7 @@ def main():
     parser.add_argument("--runtime-weight-dir", default="runtime_weights/", help="runtime weights folder")
     parser.add_argument("--pickle", default="ssfm_results.pkl", help="optional pickle file to load and inspect")
     parser.add_argument("--inputs", nargs="*", help="optional input .npy files to run on accelerator")
-    parser.add_argument("--test", action="store_true", default=True, help="run throughput_test() instead of executing inputs")
+    parser.add_argument("--test", action="store_true", default=False, help="run throughput_test() instead of executing inputs")
     args = parser.parse_args()
 
     logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
@@ -140,16 +140,36 @@ def main():
     else:
         # logging.info("No .npy inputs provided and --throughput-test not set. Exiting after initialization.")
         logging.info("No inputs provided, executing with default inputs.")
-        t = np.linspace(-T_max, T_max, N_t)
-        z = np.zeros(t)
-        ibufs.append([t, z])
+        # T_max = 10
+        # N_t = 1024
+        # t = np.linspace(-T_max, T_max, N_t)
+        # z = np.zeros_like(t)
+        # cmb = np.vstack((x, t))
+        # ibufs.append(cmb)
+        
+        # inp = [
+        #     [0, -10], [0, -9], [0, -8], [0, -7], [0, -6],
+        #     [0, -5], [0, -4], [0, -3], [0, -2], [0, -1],
+        #     [0, 0], [0, 1], [0, 2], [0, 3], [0, 4],
+        #     [0, 5], [0, 6], [0, 7], [0, 8], [0, 9],
+        #     [0, 10],
+        # ]
+        # d_inp = np.array(inp, dtype=np.int8)
+        
+        t = np.linspace(-127, 127, 255, dtype=np.int8)
+        ins = []
+        for num in t:
+            ins.append([0, num])
+        d_inp = np.array(ins, dtype=np.int8)
+        
+        ibufs.append(d_inp)
 
     obuf = driver.execute(ibufs)
     # save outputs to files next to inputs
     if not isinstance(obuf, list):
         obuf = [obuf]
     for i, out in enumerate(obuf):
-        outp = Path(args.input_npy[0]).parent / f"output_{i}.npy"
+        outp = f"output_{i}.npy"
         np.save(outp, out)
         logging.info("Saved output to %s", outp)
         save_results_csv(out, f"output_{i}.csv")

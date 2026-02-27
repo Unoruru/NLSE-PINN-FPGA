@@ -133,6 +133,8 @@ def main():
             if not p.exists():
                 logging.error("Input file not found: %s", p)
                 sys.exit(3)
+
+            print(f"Loading input from {p}...")    
             ibufs.append(np.load(p))
         logging.info("Executing overlay on %d input files...", len(ibufs))
         obuf = driver.execute(ibufs)
