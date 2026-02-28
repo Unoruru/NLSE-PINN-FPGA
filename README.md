@@ -1,4 +1,4 @@
-# PINN-QAT
+# FPGA-Accelerated Physics Informed Neural Network for Optical Fibre Communications
 
 Physics-Informed Neural Network (PINN) that solves the Nonlinear Schrodinger Equation (NLSE) with second-order dispersion and Kerr nonlinearity, then quantizes the trained model to configurable 4-bit, 8-bit, or 16-bit precision via Quantization-Aware Training (QAT) for FPGA deployment.
 
@@ -22,7 +22,7 @@ PINNs QAT/
 │   ├── ssfm.py                      # Split-Step Fourier Method solver
 │   ├── pinn_base.py                 # PINN_NLSE model + PDE residual function
 │   ├── training.py                  # Training loop, normalization, collocation, seeding
-│   └── evaluation.py               # Full-field evaluation, plotting, error metrics
+│   └── evaluation.py                # Full-field evaluation, plotting, error metrics
 │
 ├── software/
 │   ├── train_fp32.py                # Step 1: Train FP32 PINN → fp32_pinn_best.pth
