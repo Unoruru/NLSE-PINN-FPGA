@@ -14,13 +14,13 @@ for i in output:
 
 I_0 = I_0/max(I_0)
 
-t = np.linspace(-127, 127, 255)
+t = np.linspace(-127, 127, len(I_0))
 t = (t/127)*10
 
 plt.figure()
 plt.plot(t, I_0)
 plt.xlabel("t")
-plt.ylabel("Intensity")
+plt.ylabel("Normalised Intensity")
 plt.tight_layout()
 plt.savefig("results.png")
-print("saved figure")
+print("Figure saved as results.png.")
