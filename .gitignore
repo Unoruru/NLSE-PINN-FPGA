@@ -9,13 +9,11 @@ __pycache__/
 *.pth
 *.pt
 *.onnx
+*.qonnx
+*.qnnx
 
 # Ignore .gemini files
 *.gemini
-
-nul
-*.qonnx
-*.qnnx
 
 # Ignore Agents directory
 *.gemini/
@@ -24,3 +22,7 @@ nul
 qonnx2finn/*
 !qonnx2finn/qonnx2finn.py
 !qonnx2finn/req.txt
+
+# Ignore logs and results
+pinn_complex.log
+complex/results/*
