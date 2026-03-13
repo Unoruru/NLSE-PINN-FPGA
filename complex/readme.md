@@ -104,3 +104,14 @@ Running the model provides 2 sets of metrics and 1 set of visualisation. The met
 | `lr` | 5e-4 | Learning rate |
 | `bit_width` | 8 | Weight quantization bits |
 | `act_bit_width` | 8 | Activation quantization bits |
+
+## Results
+Using the default hyperparameters and running the script to train from scratch, the following metrics were obtained:
+
+```log
+2026-03-13 05:02:55, 581 __main__ INFO: EVM Summary - Distorted: 108.35%, SSFM: 1.50%, PINN: 12.32%
+2026-03-13 05:02:55, 587 __main__ INFO: SER Summary - Distorted: 88.13%, SSFM: 0.00%, PINN: 0.93%
+```
+
+The following visual was generated, which illustrates the successful recovery of 16-QAM.
+![results](sample_results.png)
