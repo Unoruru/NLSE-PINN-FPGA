@@ -1,6 +1,6 @@
 # FPGA-Accelerated Physics Informed Neural Network for Optical Fibre Communications (Complex Network)
 
-Physics-Informed Neural Network (PINN) that solves the Nonlinear Schrodinger Equation (NLSE) with second-order dispersion and Kerr nonlinearity, then quantizes the trained model to configurable 4-bit, 8-bit, or 16-bit precision via Quantization-Aware Training (QAT) for FPGA deployment.
+This script trains a Physics Informed Neural Network (PINN) to recover 16-QAM signals received at the endpoint through optical fibre. Noise is introduced due to physical constraints described by the Non-Linear Schrodingers Equation (NLSE).
 
 ## Physics Background
 
@@ -29,14 +29,14 @@ PINNs QAT/
 │   ├── training.py                 
 │   └── evaluation.py             
 │
-├── software/
-│   ├── train_fp32.py                # See outer README.md for description
+├── software/                        # See outer README.md for description
+│   ├── train_fp32.py
 │   └── pinn_2disp_kerr/
 │       ├── PINN_2disp_kerr.py       
 │       └── requirements.txt
 │
-├── quantization/
-│   ├── train_qat.py                 # See outer README.md for description
+├── quantization/                    # See outer README.md for description
+│   ├── train_qat.py 
 │   ├── qat_model.py                 
 │   ├── qat_pinn.py                  
 │   ├── qat_pinn2.py                 
@@ -62,8 +62,9 @@ Activate the enviornment by the following:
 ```
 Install the required dependencies by the following:
 ```bash
-pip install -r complex/req.txt
+pip install --no-deps --ignore-requires-python -r complex/req.txt # Designed for CUDA-accelerated workflows
 ```
+Flags are required as there are dependency and python version conflicts between packages. This has been tested to be functional for the script.
 
 ## Quick Start
 To begin, simply run the script by calling:
