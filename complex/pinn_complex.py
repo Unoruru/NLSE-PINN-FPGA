@@ -268,17 +268,17 @@ def synchronize_signals(ref, target):
 
 def main():
     parser = argparse.ArgumentParser(description="Training a Complex PINN for Optical Fibre Communication.")
-    parser.add_argument("--load", type=bool, default=False, help="Load existing model checkpoint if available.")
-    parser.add_argument("--load_path", type=str, default="complex_pinn_checkpoint.pth", help="Path to model checkpoint for loading. Default is 'complex_pinn_checkpoint.pth'.")
-    parser.add_argument("--metrics", type=bool, default=True, help="Calculate and log EVM and SER metrics after training.")
-    parser.add_argument("--visual", type=bool, default=True, help="Generate and save constellation comparison figure after evaluation. Requires metrics.")
-    parser.add_argument("--checkpoint", type=bool, default=True, help="Save model checkpoint after training.")
-    parser.add_argument("--checkpoint_path", type=str, default="complex_pinn_checkpoint.pth", help="Path to save model checkpoint. Default is 'complex_pinn_checkpoint.pth'.")
-    parser.add_argument("--epochs", type=int, default=3000, help="Number of training epochs. Default is 3000.")
-    parser.add_argument("--lr", type=float, default=5e-4, help="Learning rate for training. Default is 5e-4.")
-    parser.add_argument("--onnx_export", type=bool, default=True, help="Export trained model to ONNX format for FPGA deployment.")
-    parser.add_argument("--onnx_path", type=str, default="complex_pinn.onnx", help="Path to save ONNX model. Default is 'complex_pinn.onnx'.")
-    parser.add_argument("--finn_convert", type=bool, default=True, help="Convert exported ONNX model to FINN format using qonnx2finn. Requires onnx_export.")
+    parser.add_argument("--load", type=bool, default=False, help="Boolean. Load existing model checkpoint if available. Default False.")
+    parser.add_argument("--load_path", type=str, default="complex_pinn_checkpoint.pth", help="String. Path to model checkpoint for loading. Default 'complex_pinn_checkpoint.pth'.")
+    parser.add_argument("--metrics", type=bool, default=True, help="Boolean.Calculate and log EVM and SER metrics after training. Default True.")
+    parser.add_argument("--visual", type=bool, default=True, help="Boolean.Generate and save constellation comparison figure after evaluation. Requires metrics. Default True.")
+    parser.add_argument("--checkpoint", type=bool, default=True, help="Boolean. Save model checkpoint after training. Default True.")
+    parser.add_argument("--checkpoint_path", type=str, default="complex_pinn_checkpoint.pth", help="String. Path to save model checkpoint. Default 'complex_pinn_checkpoint.pth'.")
+    parser.add_argument("--epochs", type=int, default=3000, help="Integer. Number of training epochs. Default 3000.")
+    parser.add_argument("--lr", type=float, default=5e-4, help="Float. Learning rate for training. Default 5e-4.")
+    parser.add_argument("--onnx_export", type=bool, default=True, help="Boolean. Export trained model to ONNX format for FPGA deployment. Default True.")
+    parser.add_argument("--onnx_path", type=str, default="complex_pinn.onnx", help="String. Path to save ONNX model. Default 'complex_pinn.onnx'.")
+    parser.add_argument("--finn_convert", type=bool, default=True, help="Boolean. Convert exported ONNX model to FINN format using qonnx2finn. Requires onnx_export. Default True.")
 
     args = parser.parse_args()
 
@@ -359,7 +359,7 @@ def main():
         p_out = model(X_train.to(device)).cpu().numpy()
         pinn_recovered = (p_out[:, 0] + 1j * p_out[:, 1]) * scale_Y
     eval_end = time.time()
-    logger.log(logging.INFO, f"Evaluation completed in {eval_end - eval_start:.2f} seconds.")
+    logger.log(logging.INFO, f"Evaluation completed in {eval_end - eval_start:.6f} seconds.")
 
     if args.visual and not args.metrics:
         logger.log(logging.WARNING, "Visualization enabled without metrics calculation. Enable metrics to generate constellation comparison figure. Skipping...")
