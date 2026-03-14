@@ -29,6 +29,8 @@ console_handler.setFormatter(console_file_format)
 logger.addHandler(file_handler)
 logger.addHandler(console_handler)
 
+logger.log(logging.INFO, "Log saved as pinn_complex.log in current working directory.")
+
 # Check if current working directory is correct (should be project root)
 check_path = os.path.join(os.getcwd(), "complex", "pinn_complex.py")
 if not os.path.isfile(check_path):
