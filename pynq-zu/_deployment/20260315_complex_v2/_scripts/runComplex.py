@@ -79,7 +79,7 @@ def main():
     if args.test:
         batch_size_driver = 1
     else:
-        ibufs = np.load("fpga_test_input.npy")
+        ibufs = np.load("accelerator_inputs.npy")
         batch_size_driver = len(ibufs) # placeholder, implement logic here
 
     driver = FINNExampleOverlay(
@@ -99,7 +99,7 @@ def main():
             save_results_csv(res, "throughput_results.csv")
         return
 
-    # execute inputs on board
+    # create inputs for execution on board
     # ibufs = []
     # d_inp = np.array(ins, dtype=np.int8)
     # ibufs.append(d_inp)
