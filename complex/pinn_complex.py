@@ -8,7 +8,7 @@ import sys
 import logging
 
 # Clear console for cleaner output
-os.system('cls' if os.name == 'nt' else 'clear')
+# os.system('cls' if os.name == 'nt' else 'clear')
 
 # Set up logging
 logger = logging.getLogger(__name__)
@@ -17,7 +17,7 @@ logger.setLevel(logging.INFO)
 if logger.hasHandlers(): logger.handlers.clear()
 
 log_file_format = logging.Formatter('%(asctime)s, %(msecs)03d %(name)s %(levelname)s: %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
-file_handler = logging.FileHandler('pinn_complex.log', mode='w') # overwrite log file each run
+file_handler = logging.FileHandler('pinn_complex.log', mode='a') # appends to log file each run (a append w overwrite)
 file_handler.setLevel(logging.INFO)
 file_handler.setFormatter(log_file_format)
 
@@ -268,19 +268,30 @@ def synchronize_signals(ref, target):
         
     return ref_sync, target_sync
 
+def str2bool(v):
+    if isinstance(v, bool):
+       return v
+    if v.lower() in ('yes', 'true', 't', 'y', '1'):
+        return True
+    elif v.lower() in ('no', 'false', 'f', 'n', '0'):
+        return False
+    else:
+        raise argparse.ArgumentTypeError('Boolean value expected.')
+
 def main():
     parser = argparse.ArgumentParser(description="Training a Complex PINN for Optical Fibre Communication.")
-    parser.add_argument("--load", type=bool, default=False, help="Boolean. Load existing model checkpoint if available. Default False.")
-    parser.add_argument("--load_path", type=str, default="complex_pinn_checkpoint.pth", help="String. Path to model checkpoint for loading. Default 'complex_pinn_checkpoint.pth'.")
-    parser.add_argument("--metrics", type=bool, default=True, help="Boolean.Calculate and log EVM and SER metrics after training. Default True.")
-    parser.add_argument("--visual", type=bool, default=True, help="Boolean.Generate and save constellation comparison figure after evaluation. Requires metrics. Default True.")
-    parser.add_argument("--checkpoint", type=bool, default=True, help="Boolean. Save model checkpoint after training. Default True.")
-    parser.add_argument("--checkpoint_path", type=str, default="complex_pinn_checkpoint.pth", help="String. Path to save model checkpoint. Default 'complex_pinn_checkpoint.pth'.")
+    parser.add_argument("--load", type=str2bool, default=False, help="Boolean. Load existing model checkpoint if available. Default False.")
+    parser.add_argument("--load_path", type=str, default="complex_pinn_checkpoint.pth", help="String. Path to model checkpoint for loading. Must be within the results directory. Default 'complex_pinn_checkpoint.pth'.")
+    parser.add_argument("--reinforce", type=str2bool, default=False, help="Boolean. Reinforce physics during training with additional loss term. Requires load. Default False.")
+    parser.add_argument("--metrics", type=str2bool, default=True, help="Boolean.Calculate and log EVM and SER metrics after training. Default True.")
+    parser.add_argument("--visual", type=str2bool, default=True, help="Boolean.Generate and save constellation comparison figure after evaluation. Requires metrics. Default True.")
+    parser.add_argument("--checkpoint", type=str2bool, default=True, help="Boolean. Save model checkpoint after training. Default True.")
+    parser.add_argument("--checkpoint_path", type=str, default="complex_pinn_checkpoint.pth", help="String. Path to save model checkpoint. Must be within the results directory. Default 'complex_pinn_checkpoint.pth'.")
     parser.add_argument("--epochs", type=int, default=3000, help="Integer. Number of training epochs. Default 3000.")
     parser.add_argument("--lr", type=float, default=5e-4, help="Float. Learning rate for training. Default 5e-4.")
-    parser.add_argument("--onnx_export", type=bool, default=True, help="Boolean. Export trained model to ONNX format for FPGA deployment. Default True.")
-    parser.add_argument("--onnx_path", type=str, default="complex_pinn.onnx", help="String. Path to save ONNX model. Default 'complex_pinn.onnx'.")
-    parser.add_argument("--finn_convert", type=bool, default=True, help="Boolean. Convert exported ONNX model to FINN format using qonnx2finn. Requires onnx_export. Default True.")
+    parser.add_argument("--onnx_export", type=str2bool, default=True, help="Boolean. Export trained model to ONNX format for FPGA deployment. Default True.")
+    parser.add_argument("--onnx_path", type=str, default="complex_pinn.onnx", help="String. Path to save ONNX model. Must be within the results directory. Default 'complex_pinn.onnx'.")
+    parser.add_argument("--finn_convert", type=str2bool, default=True, help="Boolean. Convert exported ONNX model to FINN format using qonnx2finn. Requires onnx_export. Default True.")
 
     args = parser.parse_args()
 
@@ -296,12 +307,12 @@ def main():
 
     # Paths for saving results
     model_save_path = os.path.join(results_dir, args.checkpoint_path)
-    model_load_path = args.load_path
+    model_load_path = os.path.join(results_dir, args.load_path)
     comparison_fig_path = os.path.join(results_dir, "constellation_comparison.png")
 
     # check onnx export path validity
     assertlog(args.onnx_path.endswith(".onnx"), "ONNX export path must end with .onnx extension.")
-    assertlog(args.onnx_export != "model.onnx", "ONNX export path cannot be 'model.onnx' to avoid overwriting FINN conversion output. Please specify a different name.")
+    assertlog(args.onnx_path != "model.onnx", "ONNX export path cannot be 'model.onnx' to avoid overwriting FINN conversion output. Please specify a different name.")
 
     onnx_export_path = os.path.join(results_dir, args.onnx_path)
 
@@ -316,10 +327,18 @@ def main():
             model.load_state_dict(torch.load(model_load_path, map_location=device))
             model.to(device)
             logger.log(logging.INFO, f"Loaded model checkpoint from {model_load_path}.")
-            skip_training = True
+            if args.reinforce:
+                logger.log(logging.INFO, "Reinforce enabled. Continuing reinforcement training.")
+                skip_training = False
+            else:
+                logger.log(logging.INFO, "Reinforce not enabled. Skipping reinforcement training and proceeding to evaluation.")
+                skip_training = True
         except Exception as e:
             logger.log(logging.WARNING, f"Failed to load checkpoint: {e}. Starting training from scratch.")
             skip_training = False
+
+    if args.reinforce and not args.load:
+        logger.log(logging.WARNING, "Reinforce option enabled without loading a model. Please enable loading to use reinforce. Starting training from scratch without reinforcement.")
 
     # Generate 16-QAM
     points = np.array([-3, -1, 1, 3])
@@ -328,17 +347,20 @@ def main():
     const /= np.sqrt(np.mean(np.abs(const)**2))
 
     clean = const[np.random.randint(0, 16, 6000)]
+    clean = clean / np.sqrt(np.mean(np.abs(clean)**2))
+
     distorted = ssfm_nlse(clean, L, "forward", beta2, gamma, dt, n_steps) 
     logger.log(logging.INFO, "Generated training data using SSFM with forward physics.")
     baseline = ssfm_nlse(distorted, L, "reverse", beta2, gamma, dt, n_steps) # ssfm baseline for comparison
     logger.log(logging.INFO, "Generated baseline recovery using SSFM with reverse physics.")
 
-    # 1. Normalize Distorted (X)
-    scale_X = np.max(np.abs(distorted))
-    distorted_scaled = distorted / scale_X
+    # scale_X = np.max(np.abs(distorted))
+    # scale_Y = np.max(np.abs(clean)) 
 
-    # 2. Normalize Clean (Y)
-    scale_Y = np.max(np.abs(clean)) 
+    scale_X = 1.0
+    scale_Y = 1.0
+
+    distorted_scaled = distorted / scale_X
     clean_scaled = clean / scale_Y 
 
     X_train = windowing(distorted_scaled, sld_win)
@@ -421,6 +443,8 @@ def main():
         except Exception as e:
             logger.log(logging.ERROR, f"Failed to export QONNX model: {e}")
             sys.exit()
+    else:
+        logger.log(logging.INFO, "ONNX export not enabled. Skipping...")
 
     # ONNX Conversion to FINN Format
     if args.finn_convert and args.onnx_export:
@@ -434,6 +458,8 @@ def main():
             sys.exit()
     elif args.finn_convert and not args.onnx_export:
         logger.log(logging.WARNING, "FINN conversion requested without ONNX export. Please enable ONNX export to convert to FINN format. Skipping...")
+    else:
+        logger.log(logging.INFO, "FINN conversion not enabled. Skipping...")
 
     logger.log(logging.INFO, "Script execution completed successfully.")
 

@@ -79,6 +79,19 @@ python complex/pinn_complex.py --help
 ```
 for more information.
 
+## Reinforcement Training Quick Start
+In order for the network to be able to predict the recovery for different input 16-QAM, reinforcement training is required. This can be done by calling:
+```bash
+python complex/run_complex.py
+```
+This will invoke an initial 3000 epoch training, then reinforcement training of ``x`` iterations at ``y`` epochs each, based on either default or CLI inputs.
+
+Additional CLI options are available. Please run:
+```bash
+python complex/run_complex.py --help
+```
+for more information.
+
 ## Architecture
 
 The architecture of the model is as follows:
@@ -110,9 +123,9 @@ Running the model provides 2 sets of metrics and 1 set of visualisation. The met
 Using the default hyperparameters and running the script to train from scratch, the following metrics were obtained:
 
 ```log
-2026-03-13 05:02:55, 581 __main__ INFO: EVM Summary - Distorted: 108.35%, SSFM: 1.50%, PINN: 12.32%
-2026-03-13 05:02:55, 587 __main__ INFO: SER Summary - Distorted: 88.13%, SSFM: 0.00%, PINN: 0.93%
+2026-03-15 01:47:19, 908 __main__ INFO: EVM Summary - Distorted: 108.57%, SSFM: 1.51%, PINN: 13.96%
+2026-03-15 01:47:19, 915 __main__ INFO: SER Summary - Distorted: 88.58%, SSFM: 0.00%, PINN: 2.20%
 ```
 
 The following visual was generated, which illustrates the successful recovery of 16-QAM.
-![results](sample_results.png)
+![results](sample_results/constellation_comparison.png)
