@@ -65,6 +65,7 @@ import torch.nn as nn
 import torch.optim as optim
 import matplotlib.pyplot as plt
 from tqdm import trange
+import pickle
 
 import brevitas.nn as qnn
 from brevitas.quant import Int8WeightPerTensorFloat, Int8ActPerTensorFloat, Int8Bias
@@ -289,6 +290,8 @@ def main():
     parser.add_argument("--checkpoint_path", type=str, default="complex_pinn_checkpoint.pth", help="String. Path to save model checkpoint. Must be within the results directory. Default 'complex_pinn_checkpoint.pth'.")
     parser.add_argument("--epochs", type=int, default=3000, help="Integer. Number of training epochs. Default 3000.")
     parser.add_argument("--lr", type=float, default=5e-4, help="Float. Learning rate for training. Default 5e-4.")
+    parser.add_argument("--save_inputs", type=str2bool, default=False, help="Boolean. Save generated training data and inputs as .pkl/.npy files for accelerator use. Default False.")
+    parser.add_argument("--load_inputs", type=str2bool, default=False, help="Boolean. Load generated training data and inputs from .pkl/.npy files for accelerator use. Requires checkpoint and .pkl input file. Default False.")
     parser.add_argument("--onnx_export", type=str2bool, default=True, help="Boolean. Export trained model to ONNX format for FPGA deployment. Default True.")
     parser.add_argument("--onnx_path", type=str, default="complex_pinn.onnx", help="String. Path to save ONNX model. Must be within the results directory. Default 'complex_pinn.onnx'.")
     parser.add_argument("--finn_convert", type=str2bool, default=True, help="Boolean. Convert exported ONNX model to FINN format using qonnx2finn. Requires onnx_export. Default True.")
@@ -310,9 +313,20 @@ def main():
     model_load_path = os.path.join(results_dir, args.load_path)
     comparison_fig_path = os.path.join(results_dir, "constellation_comparison.png")
 
+    inputs_save_path = os.path.join(results_dir, "generated_inputs.pkl")
+    accelerator_inputs_path = os.path.join(results_dir, "accelerator_inputs.npy")
+
     # check onnx export path validity
     assertlog(args.onnx_path.endswith(".onnx"), "ONNX export path must end with .onnx extension.")
     assertlog(args.onnx_path != "model.onnx", "ONNX export path cannot be 'model.onnx' to avoid overwriting FINN conversion output. Please specify a different name.")
+    
+    # sanity checks for arguments
+    assertlog(args.epochs > 0, "Epoch count must be a positive integer.")
+    assertlog(args.lr > 0, "Learning rate must be a positive float.")
+    assertlog(not (args.save_inputs and args.load_inputs), "Cannot both save and load inputs in the same run. Please choose one.")
+    if args.load_inputs:
+        assertlog(os.path.isfile(inputs_save_path), f"Input loading specified but file not found at {inputs_save_path}. Please ensure the file exists or disable input loading.")
+        assertlog(args.load, "Input loading specified without model loading. Please enable model loading to use loaded inputs.")
 
     onnx_export_path = os.path.join(results_dir, args.onnx_path)
 
@@ -340,31 +354,48 @@ def main():
     if args.reinforce and not args.load:
         logger.log(logging.WARNING, "Reinforce option enabled without loading a model. Please enable loading to use reinforce. Starting training from scratch without reinforcement.")
 
-    # Generate 16-QAM
-    points = np.array([-3, -1, 1, 3])
-    re, im = np.meshgrid(points, points)
-    const = (re + 1j*im).flatten()
-    const /= np.sqrt(np.mean(np.abs(const)**2))
+    if args.load_inputs:
+        try:
+            with open(inputs_save_path, "rb") as f:
+                clean, distorted, baseline, X_train, Y_train, scale_X, scale_Y, clean_scaled, distorted_scaled = pickle.load(f)
+            logger.log(logging.INFO, f"Loaded training data and inputs from {inputs_save_path} for evaluation.")
+        except Exception as e:
+            logger.log(logging.ERROR, f"Failed to load inputs: {e}. Ensure the file exists and is a valid .pkl file. Exiting...")
+            sys.exit()
+    else:
+        logger.log(logging.INFO, "No input loading specified. Will generate training data and inputs during execution for training and evaluation.")
+        # Generate 16-QAM
+        points = np.array([-3, -1, 1, 3])
+        re, im = np.meshgrid(points, points)
+        const = (re + 1j*im).flatten()
+        const /= np.sqrt(np.mean(np.abs(const)**2))
 
-    clean = const[np.random.randint(0, 16, 6000)]
-    clean = clean / np.sqrt(np.mean(np.abs(clean)**2))
+        clean = const[np.random.randint(0, 16, 6000)]
+        clean = clean / np.sqrt(np.mean(np.abs(clean)**2))
 
-    distorted = ssfm_nlse(clean, L, "forward", beta2, gamma, dt, n_steps) 
-    logger.log(logging.INFO, "Generated training data using SSFM with forward physics.")
-    baseline = ssfm_nlse(distorted, L, "reverse", beta2, gamma, dt, n_steps) # ssfm baseline for comparison
-    logger.log(logging.INFO, "Generated baseline recovery using SSFM with reverse physics.")
+        distorted = ssfm_nlse(clean, L, "forward", beta2, gamma, dt, n_steps) 
+        logger.log(logging.INFO, "Generated training data using SSFM with forward physics.")
+        baseline = ssfm_nlse(distorted, L, "reverse", beta2, gamma, dt, n_steps) # ssfm baseline for comparison
+        logger.log(logging.INFO, "Generated baseline recovery using SSFM with reverse physics.")
 
-    # scale_X = np.max(np.abs(distorted))
-    # scale_Y = np.max(np.abs(clean)) 
+        # scale_X = np.max(np.abs(distorted))
+        # scale_Y = np.max(np.abs(clean)) 
 
-    scale_X = 1.0
-    scale_Y = 1.0
+        scale_X = 1.0
+        scale_Y = 1.0
 
-    distorted_scaled = distorted / scale_X
-    clean_scaled = clean / scale_Y 
+        distorted_scaled = distorted / scale_X
+        clean_scaled = clean / scale_Y 
 
-    X_train = windowing(distorted_scaled, sld_win)
-    Y_train = torch.tensor(np.stack([np.real(clean_scaled), np.imag(clean_scaled)], axis=1), dtype=torch.float32)
+        X_train = windowing(distorted_scaled, sld_win)
+        Y_train = torch.tensor(np.stack([np.real(clean_scaled), np.imag(clean_scaled)], axis=1), dtype=torch.float32)
+
+    # save inputs for accelerator use if specified
+    if args.save_inputs and not args.load_inputs:
+        pack = (clean, distorted, baseline, X_train, Y_train, clean_scaled, distorted_scaled)
+        with open(inputs_save_path, "wb") as f:
+            pickle.dump(pack, f)
+        logger.log(logging.INFO, f"Generated training data and inputs saved to {inputs_save_path} for later evaluation.")
 
     if not skip_training:
         # Train the complex PINN
@@ -384,6 +415,17 @@ def main():
         pinn_recovered = (p_out[:, 0] + 1j * p_out[:, 1]) * scale_Y
     eval_end = time.time()
     logger.log(logging.INFO, f"Evaluation completed in {eval_end - eval_start:.6f} seconds.")
+
+    # create inputs for accelerator
+    if args.save_inputs and not args.load_inputs:
+        with torch.no_grad():
+            # Pass the float data ONLY through the first QuantIdentity layer
+            quant_input_tensor = model.model[0](X_train.to(device))
+            # Extract the raw integer values from the Brevitas QuantTensor and cast them to standard NumPy int8
+            fpga_input_data = quant_input_tensor.int().cpu().numpy().astype(np.int8)
+        logger.log(logging.INFO, "Hardware input shape is {} and type is {}.".format(fpga_input_data.shape, fpga_input_data.dtype))
+        np.save(accelerator_inputs_path, fpga_input_data)
+        logger.log(logging.INFO, "Generated quantized inputs for accelerator from the first QuantIdentity layer and saved to {}.".format(accelerator_inputs_path))
 
     if args.visual and not args.metrics:
         logger.log(logging.WARNING, "Visualization enabled without metrics calculation. Enable metrics to generate constellation comparison figure. Skipping...")
