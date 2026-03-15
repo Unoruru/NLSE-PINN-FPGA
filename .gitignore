@@ -25,4 +25,5 @@ qonnx2finn/*
 
 # Ignore logs and results
 *.log
+!complex/sample_results/*
 complex/results/*

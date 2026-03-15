@@ -1,0 +1,358 @@
+2026-03-15 01:38:43, 603 __main__ INFO: Log saved as pinn_complex.log in current working directory.
+2026-03-15 01:38:43, 610 __main__ INFO: Starting initial training to generate PINN.
+2026-03-15 01:38:43, 679 __main__ INFO: Log saved as pinn_complex.log in current working directory.
+2026-03-15 01:38:43, 679 __main__ INFO: Current working directory verified as project root: D:\Python\year4_proj\complex_branch\PINN_FPGA_Project.
+2026-03-15 01:38:43, 679 __main__ INFO: Results directory verified: D:\Python\year4_proj\complex_branch\PINN_FPGA_Project\complex\results.
+2026-03-15 01:38:47, 048 __main__ INFO: Script started for training complex PINN.
+2026-03-15 01:38:47, 174 __main__ INFO: Torch using cuda for training.
+2026-03-15 01:38:47, 184 __main__ INFO: Generated training data using SSFM with forward physics.
+2026-03-15 01:38:47, 194 __main__ INFO: Generated baseline recovery using SSFM with reverse physics.
+2026-03-15 01:38:47, 206 __main__ INFO: Starting PINN training...
+2026-03-15 01:42:08, 955 __main__ INFO: PINN training completed in 201.75 seconds.
+2026-03-15 01:42:08, 955 __main__ INFO: Final Training Loss: 0.007284 at 3000 epochs.
+2026-03-15 01:42:08, 961 __main__ INFO: Model checkpoint saved at D:\Python\year4_proj\complex_branch\PINN_FPGA_Project\complex\results\complex_pinn_checkpoint.pth.
+2026-03-15 01:42:08, 962 __main__ INFO: Evaluating PINN performance against baseline...
+2026-03-15 01:42:08, 981 __main__ INFO: Evaluation completed in 0.018996 seconds.
+2026-03-15 01:42:08, 994 __main__ INFO: EVM Summary - Distorted: 101.68%, SSFM: 1.52%, PINN: 12.07%
+2026-03-15 01:42:09, 000 __main__ INFO: SER Summary - Distorted: 86.16%, SSFM: 0.00%, PINN: 0.82%
+2026-03-15 01:42:09, 000 __main__ INFO: ONNX export not enabled. Skipping...
+2026-03-15 01:42:09, 000 __main__ INFO: FINN conversion not enabled. Skipping...
+2026-03-15 01:42:09, 000 __main__ INFO: Script execution completed successfully.
+2026-03-15 01:42:09, 734 __main__ INFO: Starting Reinforcement training and evaluation with reinforcement learning for 15 iterations and 250 epochs each.
+2026-03-15 01:42:09, 734 __main__ INFO: Reinforcement Learning Iteration 1/15
+2026-03-15 01:42:09, 801 __main__ INFO: Log saved as pinn_complex.log in current working directory.
+2026-03-15 01:42:09, 802 __main__ INFO: Current working directory verified as project root: D:\Python\year4_proj\complex_branch\PINN_FPGA_Project.
+2026-03-15 01:42:09, 802 __main__ INFO: Results directory verified: D:\Python\year4_proj\complex_branch\PINN_FPGA_Project\complex\results.
+2026-03-15 01:42:13, 468 __main__ INFO: Script started for training complex PINN.
+2026-03-15 01:42:13, 573 __main__ INFO: Torch using cuda for training.
+2026-03-15 01:42:13, 599 __main__ INFO: Loaded model checkpoint from D:\Python\year4_proj\complex_branch\PINN_FPGA_Project\complex\results\complex_pinn_checkpoint.pth.
+2026-03-15 01:42:13, 600 __main__ INFO: Reinforce enabled. Continuing reinforcement training.
+2026-03-15 01:42:13, 609 __main__ INFO: Generated training data using SSFM with forward physics.
+2026-03-15 01:42:13, 618 __main__ INFO: Generated baseline recovery using SSFM with reverse physics.
+2026-03-15 01:42:13, 631 __main__ INFO: Starting PINN training...
+2026-03-15 01:42:30, 526 __main__ INFO: PINN training completed in 16.89 seconds.
+2026-03-15 01:42:30, 526 __main__ INFO: Final Training Loss: 0.010009 at 250 epochs.
+2026-03-15 01:42:30, 531 __main__ INFO: Model checkpoint saved at D:\Python\year4_proj\complex_branch\PINN_FPGA_Project\complex\results\complex_pinn_checkpoint.pth.
+2026-03-15 01:42:30, 531 __main__ INFO: Evaluating PINN performance against baseline...
+2026-03-15 01:42:30, 554 __main__ INFO: Evaluation completed in 0.023003 seconds.
+2026-03-15 01:42:30, 573 __main__ INFO: EVM Summary - Distorted: 108.28%, SSFM: 1.51%, PINN: 14.18%
+2026-03-15 01:42:30, 580 __main__ INFO: SER Summary - Distorted: 88.53%, SSFM: 0.00%, PINN: 1.62%
+2026-03-15 01:42:30, 580 __main__ INFO: ONNX export not enabled. Skipping...
+2026-03-15 01:42:30, 580 __main__ INFO: FINN conversion not enabled. Skipping...
+2026-03-15 01:42:30, 580 __main__ INFO: Script execution completed successfully.
+2026-03-15 01:42:31, 224 __main__ INFO: Reinforcement Learning Iteration 2/15
+2026-03-15 01:42:31, 279 __main__ INFO: Log saved as pinn_complex.log in current working directory.
+2026-03-15 01:42:31, 280 __main__ INFO: Current working directory verified as project root: D:\Python\year4_proj\complex_branch\PINN_FPGA_Project.
+2026-03-15 01:42:31, 280 __main__ INFO: Results directory verified: D:\Python\year4_proj\complex_branch\PINN_FPGA_Project\complex\results.
+2026-03-15 01:42:34, 754 __main__ INFO: Script started for training complex PINN.
+2026-03-15 01:42:34, 868 __main__ INFO: Torch using cuda for training.
+2026-03-15 01:42:34, 907 __main__ INFO: Loaded model checkpoint from D:\Python\year4_proj\complex_branch\PINN_FPGA_Project\complex\results\complex_pinn_checkpoint.pth.
+2026-03-15 01:42:34, 907 __main__ INFO: Reinforce enabled. Continuing reinforcement training.
+2026-03-15 01:42:34, 917 __main__ INFO: Generated training data using SSFM with forward physics.
+2026-03-15 01:42:34, 927 __main__ INFO: Generated baseline recovery using SSFM with reverse physics.
+2026-03-15 01:42:34, 939 __main__ INFO: Starting PINN training...
+2026-03-15 01:42:51, 057 __main__ INFO: PINN training completed in 16.12 seconds.
+2026-03-15 01:42:51, 057 __main__ INFO: Final Training Loss: 0.008800 at 250 epochs.
+2026-03-15 01:42:51, 061 __main__ INFO: Model checkpoint saved at D:\Python\year4_proj\complex_branch\PINN_FPGA_Project\complex\results\complex_pinn_checkpoint.pth.
+2026-03-15 01:42:51, 061 __main__ INFO: Evaluating PINN performance against baseline...
+2026-03-15 01:42:51, 085 __main__ INFO: Evaluation completed in 0.024000 seconds.
+2026-03-15 01:42:51, 098 __main__ INFO: EVM Summary - Distorted: 108.64%, SSFM: 1.48%, PINN: 13.30%
+2026-03-15 01:42:51, 104 __main__ INFO: SER Summary - Distorted: 88.35%, SSFM: 0.00%, PINN: 1.42%
+2026-03-15 01:42:51, 104 __main__ INFO: ONNX export not enabled. Skipping...
+2026-03-15 01:42:51, 104 __main__ INFO: FINN conversion not enabled. Skipping...
+2026-03-15 01:42:51, 104 __main__ INFO: Script execution completed successfully.
+2026-03-15 01:42:51, 779 __main__ INFO: Reinforcement Learning Iteration 3/15
+2026-03-15 01:42:51, 835 __main__ INFO: Log saved as pinn_complex.log in current working directory.
+2026-03-15 01:42:51, 835 __main__ INFO: Current working directory verified as project root: D:\Python\year4_proj\complex_branch\PINN_FPGA_Project.
+2026-03-15 01:42:51, 835 __main__ INFO: Results directory verified: D:\Python\year4_proj\complex_branch\PINN_FPGA_Project\complex\results.
+2026-03-15 01:42:55, 195 __main__ INFO: Script started for training complex PINN.
+2026-03-15 01:42:55, 303 __main__ INFO: Torch using cuda for training.
+2026-03-15 01:42:55, 337 __main__ INFO: Loaded model checkpoint from D:\Python\year4_proj\complex_branch\PINN_FPGA_Project\complex\results\complex_pinn_checkpoint.pth.
+2026-03-15 01:42:55, 337 __main__ INFO: Reinforce enabled. Continuing reinforcement training.
+2026-03-15 01:42:55, 347 __main__ INFO: Generated training data using SSFM with forward physics.
+2026-03-15 01:42:55, 357 __main__ INFO: Generated baseline recovery using SSFM with reverse physics.
+2026-03-15 01:42:55, 369 __main__ INFO: Starting PINN training...
+2026-03-15 01:43:11, 512 __main__ INFO: PINN training completed in 16.14 seconds.
+2026-03-15 01:43:11, 512 __main__ INFO: Final Training Loss: 0.009501 at 250 epochs.
+2026-03-15 01:43:11, 516 __main__ INFO: Model checkpoint saved at D:\Python\year4_proj\complex_branch\PINN_FPGA_Project\complex\results\complex_pinn_checkpoint.pth.
+2026-03-15 01:43:11, 516 __main__ INFO: Evaluating PINN performance against baseline...
+2026-03-15 01:43:11, 535 __main__ INFO: Evaluation completed in 0.019000 seconds.
+2026-03-15 01:43:11, 548 __main__ INFO: EVM Summary - Distorted: 100.99%, SSFM: 1.56%, PINN: 13.80%
+2026-03-15 01:43:11, 554 __main__ INFO: SER Summary - Distorted: 84.95%, SSFM: 0.00%, PINN: 1.62%
+2026-03-15 01:43:11, 554 __main__ INFO: ONNX export not enabled. Skipping...
+2026-03-15 01:43:11, 554 __main__ INFO: FINN conversion not enabled. Skipping...
+2026-03-15 01:43:11, 554 __main__ INFO: Script execution completed successfully.
+2026-03-15 01:43:12, 258 __main__ INFO: Reinforcement Learning Iteration 4/15
+2026-03-15 01:43:12, 319 __main__ INFO: Log saved as pinn_complex.log in current working directory.
+2026-03-15 01:43:12, 319 __main__ INFO: Current working directory verified as project root: D:\Python\year4_proj\complex_branch\PINN_FPGA_Project.
+2026-03-15 01:43:12, 320 __main__ INFO: Results directory verified: D:\Python\year4_proj\complex_branch\PINN_FPGA_Project\complex\results.
+2026-03-15 01:43:15, 890 __main__ INFO: Script started for training complex PINN.
+2026-03-15 01:43:16, 009 __main__ INFO: Torch using cuda for training.
+2026-03-15 01:43:16, 046 __main__ INFO: Loaded model checkpoint from D:\Python\year4_proj\complex_branch\PINN_FPGA_Project\complex\results\complex_pinn_checkpoint.pth.
+2026-03-15 01:43:16, 046 __main__ INFO: Reinforce enabled. Continuing reinforcement training.
+2026-03-15 01:43:16, 056 __main__ INFO: Generated training data using SSFM with forward physics.
+2026-03-15 01:43:16, 066 __main__ INFO: Generated baseline recovery using SSFM with reverse physics.
+2026-03-15 01:43:16, 078 __main__ INFO: Starting PINN training...
+2026-03-15 01:43:32, 348 __main__ INFO: PINN training completed in 16.27 seconds.
+2026-03-15 01:43:32, 349 __main__ INFO: Final Training Loss: 0.009170 at 250 epochs.
+2026-03-15 01:43:32, 353 __main__ INFO: Model checkpoint saved at D:\Python\year4_proj\complex_branch\PINN_FPGA_Project\complex\results\complex_pinn_checkpoint.pth.
+2026-03-15 01:43:32, 353 __main__ INFO: Evaluating PINN performance against baseline...
+2026-03-15 01:43:32, 372 __main__ INFO: Evaluation completed in 0.019001 seconds.
+2026-03-15 01:43:32, 385 __main__ INFO: EVM Summary - Distorted: 101.68%, SSFM: 1.52%, PINN: 13.54%
+2026-03-15 01:43:32, 390 __main__ INFO: SER Summary - Distorted: 85.46%, SSFM: 0.00%, PINN: 1.48%
+2026-03-15 01:43:32, 391 __main__ INFO: ONNX export not enabled. Skipping...
+2026-03-15 01:43:32, 391 __main__ INFO: FINN conversion not enabled. Skipping...
+2026-03-15 01:43:32, 391 __main__ INFO: Script execution completed successfully.
+2026-03-15 01:43:33, 068 __main__ INFO: Reinforcement Learning Iteration 5/15
+2026-03-15 01:43:33, 130 __main__ INFO: Log saved as pinn_complex.log in current working directory.
+2026-03-15 01:43:33, 130 __main__ INFO: Current working directory verified as project root: D:\Python\year4_proj\complex_branch\PINN_FPGA_Project.
+2026-03-15 01:43:33, 130 __main__ INFO: Results directory verified: D:\Python\year4_proj\complex_branch\PINN_FPGA_Project\complex\results.
+2026-03-15 01:43:36, 799 __main__ INFO: Script started for training complex PINN.
+2026-03-15 01:43:36, 907 __main__ INFO: Torch using cuda for training.
+2026-03-15 01:43:36, 935 __main__ INFO: Loaded model checkpoint from D:\Python\year4_proj\complex_branch\PINN_FPGA_Project\complex\results\complex_pinn_checkpoint.pth.
+2026-03-15 01:43:36, 935 __main__ INFO: Reinforce enabled. Continuing reinforcement training.
+2026-03-15 01:43:36, 945 __main__ INFO: Generated training data using SSFM with forward physics.
+2026-03-15 01:43:36, 955 __main__ INFO: Generated baseline recovery using SSFM with reverse physics.
+2026-03-15 01:43:36, 968 __main__ INFO: Starting PINN training...
+2026-03-15 01:43:52, 826 __main__ INFO: PINN training completed in 15.86 seconds.
+2026-03-15 01:43:52, 826 __main__ INFO: Final Training Loss: 0.008704 at 250 epochs.
+2026-03-15 01:43:52, 831 __main__ INFO: Model checkpoint saved at D:\Python\year4_proj\complex_branch\PINN_FPGA_Project\complex\results\complex_pinn_checkpoint.pth.
+2026-03-15 01:43:52, 831 __main__ INFO: Evaluating PINN performance against baseline...
+2026-03-15 01:43:52, 851 __main__ INFO: Evaluation completed in 0.020000 seconds.
+2026-03-15 01:43:52, 864 __main__ INFO: EVM Summary - Distorted: 103.11%, SSFM: 1.51%, PINN: 13.26%
+2026-03-15 01:43:52, 870 __main__ INFO: SER Summary - Distorted: 86.65%, SSFM: 0.00%, PINN: 1.05%
+2026-03-15 01:43:52, 871 __main__ INFO: ONNX export not enabled. Skipping...
+2026-03-15 01:43:52, 871 __main__ INFO: FINN conversion not enabled. Skipping...
+2026-03-15 01:43:52, 871 __main__ INFO: Script execution completed successfully.
+2026-03-15 01:43:53, 542 __main__ INFO: Reinforcement Learning Iteration 6/15
+2026-03-15 01:43:53, 600 __main__ INFO: Log saved as pinn_complex.log in current working directory.
+2026-03-15 01:43:53, 600 __main__ INFO: Current working directory verified as project root: D:\Python\year4_proj\complex_branch\PINN_FPGA_Project.
+2026-03-15 01:43:53, 600 __main__ INFO: Results directory verified: D:\Python\year4_proj\complex_branch\PINN_FPGA_Project\complex\results.
+2026-03-15 01:43:57, 174 __main__ INFO: Script started for training complex PINN.
+2026-03-15 01:43:57, 298 __main__ INFO: Torch using cuda for training.
+2026-03-15 01:43:57, 334 __main__ INFO: Loaded model checkpoint from D:\Python\year4_proj\complex_branch\PINN_FPGA_Project\complex\results\complex_pinn_checkpoint.pth.
+2026-03-15 01:43:57, 334 __main__ INFO: Reinforce enabled. Continuing reinforcement training.
+2026-03-15 01:43:57, 344 __main__ INFO: Generated training data using SSFM with forward physics.
+2026-03-15 01:43:57, 354 __main__ INFO: Generated baseline recovery using SSFM with reverse physics.
+2026-03-15 01:43:57, 368 __main__ INFO: Starting PINN training...
+2026-03-15 01:44:12, 912 __main__ INFO: PINN training completed in 15.54 seconds.
+2026-03-15 01:44:12, 912 __main__ INFO: Final Training Loss: 0.008378 at 250 epochs.
+2026-03-15 01:44:12, 916 __main__ INFO: Model checkpoint saved at D:\Python\year4_proj\complex_branch\PINN_FPGA_Project\complex\results\complex_pinn_checkpoint.pth.
+2026-03-15 01:44:12, 917 __main__ INFO: Evaluating PINN performance against baseline...
+2026-03-15 01:44:12, 942 __main__ INFO: Evaluation completed in 0.025002 seconds.
+2026-03-15 01:44:12, 956 __main__ INFO: EVM Summary - Distorted: 101.10%, SSFM: 1.53%, PINN: 13.00%
+2026-03-15 01:44:12, 962 __main__ INFO: SER Summary - Distorted: 85.45%, SSFM: 0.00%, PINN: 1.47%
+2026-03-15 01:44:12, 962 __main__ INFO: ONNX export not enabled. Skipping...
+2026-03-15 01:44:12, 962 __main__ INFO: FINN conversion not enabled. Skipping...
+2026-03-15 01:44:12, 962 __main__ INFO: Script execution completed successfully.
+2026-03-15 01:44:13, 617 __main__ INFO: Reinforcement Learning Iteration 7/15
+2026-03-15 01:44:13, 674 __main__ INFO: Log saved as pinn_complex.log in current working directory.
+2026-03-15 01:44:13, 674 __main__ INFO: Current working directory verified as project root: D:\Python\year4_proj\complex_branch\PINN_FPGA_Project.
+2026-03-15 01:44:13, 674 __main__ INFO: Results directory verified: D:\Python\year4_proj\complex_branch\PINN_FPGA_Project\complex\results.
+2026-03-15 01:44:17, 208 __main__ INFO: Script started for training complex PINN.
+2026-03-15 01:44:17, 315 __main__ INFO: Torch using cuda for training.
+2026-03-15 01:44:17, 352 __main__ INFO: Loaded model checkpoint from D:\Python\year4_proj\complex_branch\PINN_FPGA_Project\complex\results\complex_pinn_checkpoint.pth.
+2026-03-15 01:44:17, 352 __main__ INFO: Reinforce enabled. Continuing reinforcement training.
+2026-03-15 01:44:17, 363 __main__ INFO: Generated training data using SSFM with forward physics.
+2026-03-15 01:44:17, 373 __main__ INFO: Generated baseline recovery using SSFM with reverse physics.
+2026-03-15 01:44:17, 385 __main__ INFO: Starting PINN training...
+2026-03-15 01:44:33, 008 __main__ INFO: PINN training completed in 15.62 seconds.
+2026-03-15 01:44:33, 008 __main__ INFO: Final Training Loss: 0.007828 at 250 epochs.
+2026-03-15 01:44:33, 012 __main__ INFO: Model checkpoint saved at D:\Python\year4_proj\complex_branch\PINN_FPGA_Project\complex\results\complex_pinn_checkpoint.pth.
+2026-03-15 01:44:33, 012 __main__ INFO: Evaluating PINN performance against baseline...
+2026-03-15 01:44:33, 031 __main__ INFO: Evaluation completed in 0.019002 seconds.
+2026-03-15 01:44:33, 044 __main__ INFO: EVM Summary - Distorted: 102.49%, SSFM: 1.54%, PINN: 12.57%
+2026-03-15 01:44:33, 050 __main__ INFO: SER Summary - Distorted: 85.83%, SSFM: 0.00%, PINN: 1.10%
+2026-03-15 01:44:33, 050 __main__ INFO: ONNX export not enabled. Skipping...
+2026-03-15 01:44:33, 050 __main__ INFO: FINN conversion not enabled. Skipping...
+2026-03-15 01:44:33, 050 __main__ INFO: Script execution completed successfully.
+2026-03-15 01:44:33, 707 __main__ INFO: Reinforcement Learning Iteration 8/15
+2026-03-15 01:44:33, 772 __main__ INFO: Log saved as pinn_complex.log in current working directory.
+2026-03-15 01:44:33, 772 __main__ INFO: Current working directory verified as project root: D:\Python\year4_proj\complex_branch\PINN_FPGA_Project.
+2026-03-15 01:44:33, 772 __main__ INFO: Results directory verified: D:\Python\year4_proj\complex_branch\PINN_FPGA_Project\complex\results.
+2026-03-15 01:44:37, 239 __main__ INFO: Script started for training complex PINN.
+2026-03-15 01:44:37, 358 __main__ INFO: Torch using cuda for training.
+2026-03-15 01:44:37, 394 __main__ INFO: Loaded model checkpoint from D:\Python\year4_proj\complex_branch\PINN_FPGA_Project\complex\results\complex_pinn_checkpoint.pth.
+2026-03-15 01:44:37, 395 __main__ INFO: Reinforce enabled. Continuing reinforcement training.
+2026-03-15 01:44:37, 405 __main__ INFO: Generated training data using SSFM with forward physics.
+2026-03-15 01:44:37, 415 __main__ INFO: Generated baseline recovery using SSFM with reverse physics.
+2026-03-15 01:44:37, 428 __main__ INFO: Starting PINN training...
+2026-03-15 01:44:53, 268 __main__ INFO: PINN training completed in 15.84 seconds.
+2026-03-15 01:44:53, 269 __main__ INFO: Final Training Loss: 0.008196 at 250 epochs.
+2026-03-15 01:44:53, 273 __main__ INFO: Model checkpoint saved at D:\Python\year4_proj\complex_branch\PINN_FPGA_Project\complex\results\complex_pinn_checkpoint.pth.
+2026-03-15 01:44:53, 273 __main__ INFO: Evaluating PINN performance against baseline...
+2026-03-15 01:44:53, 293 __main__ INFO: Evaluation completed in 0.020001 seconds.
+2026-03-15 01:44:53, 306 __main__ INFO: EVM Summary - Distorted: 108.67%, SSFM: 1.50%, PINN: 12.83%
+2026-03-15 01:44:53, 312 __main__ INFO: SER Summary - Distorted: 88.55%, SSFM: 0.00%, PINN: 1.27%
+2026-03-15 01:44:53, 312 __main__ INFO: ONNX export not enabled. Skipping...
+2026-03-15 01:44:53, 312 __main__ INFO: FINN conversion not enabled. Skipping...
+2026-03-15 01:44:53, 312 __main__ INFO: Script execution completed successfully.
+2026-03-15 01:44:53, 981 __main__ INFO: Reinforcement Learning Iteration 9/15
+2026-03-15 01:44:54, 039 __main__ INFO: Log saved as pinn_complex.log in current working directory.
+2026-03-15 01:44:54, 039 __main__ INFO: Current working directory verified as project root: D:\Python\year4_proj\complex_branch\PINN_FPGA_Project.
+2026-03-15 01:44:54, 039 __main__ INFO: Results directory verified: D:\Python\year4_proj\complex_branch\PINN_FPGA_Project\complex\results.
+2026-03-15 01:44:57, 448 __main__ INFO: Script started for training complex PINN.
+2026-03-15 01:44:57, 572 __main__ INFO: Torch using cuda for training.
+2026-03-15 01:44:57, 607 __main__ INFO: Loaded model checkpoint from D:\Python\year4_proj\complex_branch\PINN_FPGA_Project\complex\results\complex_pinn_checkpoint.pth.
+2026-03-15 01:44:57, 607 __main__ INFO: Reinforce enabled. Continuing reinforcement training.
+2026-03-15 01:44:57, 617 __main__ INFO: Generated training data using SSFM with forward physics.
+2026-03-15 01:44:57, 626 __main__ INFO: Generated baseline recovery using SSFM with reverse physics.
+2026-03-15 01:44:57, 641 __main__ INFO: Starting PINN training...
+2026-03-15 01:45:14, 091 __main__ INFO: PINN training completed in 16.45 seconds.
+2026-03-15 01:45:14, 091 __main__ INFO: Final Training Loss: 0.007448 at 250 epochs.
+2026-03-15 01:45:14, 096 __main__ INFO: Model checkpoint saved at D:\Python\year4_proj\complex_branch\PINN_FPGA_Project\complex\results\complex_pinn_checkpoint.pth.
+2026-03-15 01:45:14, 096 __main__ INFO: Evaluating PINN performance against baseline...
+2026-03-15 01:45:14, 116 __main__ INFO: Evaluation completed in 0.019997 seconds.
+2026-03-15 01:45:14, 129 __main__ INFO: EVM Summary - Distorted: 102.98%, SSFM: 1.51%, PINN: 12.22%
+2026-03-15 01:45:14, 134 __main__ INFO: SER Summary - Distorted: 86.50%, SSFM: 0.00%, PINN: 0.98%
+2026-03-15 01:45:14, 135 __main__ INFO: ONNX export not enabled. Skipping...
+2026-03-15 01:45:14, 135 __main__ INFO: FINN conversion not enabled. Skipping...
+2026-03-15 01:45:14, 135 __main__ INFO: Script execution completed successfully.
+2026-03-15 01:45:14, 781 __main__ INFO: Reinforcement Learning Iteration 10/15
+2026-03-15 01:45:14, 841 __main__ INFO: Log saved as pinn_complex.log in current working directory.
+2026-03-15 01:45:14, 841 __main__ INFO: Current working directory verified as project root: D:\Python\year4_proj\complex_branch\PINN_FPGA_Project.
+2026-03-15 01:45:14, 841 __main__ INFO: Results directory verified: D:\Python\year4_proj\complex_branch\PINN_FPGA_Project\complex\results.
+2026-03-15 01:45:18, 285 __main__ INFO: Script started for training complex PINN.
+2026-03-15 01:45:18, 407 __main__ INFO: Torch using cuda for training.
+2026-03-15 01:45:18, 444 __main__ INFO: Loaded model checkpoint from D:\Python\year4_proj\complex_branch\PINN_FPGA_Project\complex\results\complex_pinn_checkpoint.pth.
+2026-03-15 01:45:18, 445 __main__ INFO: Reinforce enabled. Continuing reinforcement training.
+2026-03-15 01:45:18, 454 __main__ INFO: Generated training data using SSFM with forward physics.
+2026-03-15 01:45:18, 464 __main__ INFO: Generated baseline recovery using SSFM with reverse physics.
+2026-03-15 01:45:18, 477 __main__ INFO: Starting PINN training...
+2026-03-15 01:45:33, 746 __main__ INFO: PINN training completed in 15.27 seconds.
+2026-03-15 01:45:33, 746 __main__ INFO: Final Training Loss: 0.006908 at 250 epochs.
+2026-03-15 01:45:33, 750 __main__ INFO: Model checkpoint saved at D:\Python\year4_proj\complex_branch\PINN_FPGA_Project\complex\results\complex_pinn_checkpoint.pth.
+2026-03-15 01:45:33, 750 __main__ INFO: Evaluating PINN performance against baseline...
+2026-03-15 01:45:33, 767 __main__ INFO: Evaluation completed in 0.017000 seconds.
+2026-03-15 01:45:33, 780 __main__ INFO: EVM Summary - Distorted: 101.22%, SSFM: 1.51%, PINN: 11.79%
+2026-03-15 01:45:33, 786 __main__ INFO: SER Summary - Distorted: 85.73%, SSFM: 0.00%, PINN: 0.85%
+2026-03-15 01:45:33, 786 __main__ INFO: ONNX export not enabled. Skipping...
+2026-03-15 01:45:33, 786 __main__ INFO: FINN conversion not enabled. Skipping...
+2026-03-15 01:45:33, 787 __main__ INFO: Script execution completed successfully.
+2026-03-15 01:45:34, 444 __main__ INFO: Reinforcement Learning Iteration 11/15
+2026-03-15 01:45:34, 504 __main__ INFO: Log saved as pinn_complex.log in current working directory.
+2026-03-15 01:45:34, 504 __main__ INFO: Current working directory verified as project root: D:\Python\year4_proj\complex_branch\PINN_FPGA_Project.
+2026-03-15 01:45:34, 504 __main__ INFO: Results directory verified: D:\Python\year4_proj\complex_branch\PINN_FPGA_Project\complex\results.
+2026-03-15 01:45:37, 934 __main__ INFO: Script started for training complex PINN.
+2026-03-15 01:45:38, 058 __main__ INFO: Torch using cuda for training.
+2026-03-15 01:45:38, 093 __main__ INFO: Loaded model checkpoint from D:\Python\year4_proj\complex_branch\PINN_FPGA_Project\complex\results\complex_pinn_checkpoint.pth.
+2026-03-15 01:45:38, 093 __main__ INFO: Reinforce enabled. Continuing reinforcement training.
+2026-03-15 01:45:38, 106 __main__ INFO: Generated training data using SSFM with forward physics.
+2026-03-15 01:45:38, 115 __main__ INFO: Generated baseline recovery using SSFM with reverse physics.
+2026-03-15 01:45:38, 129 __main__ INFO: Starting PINN training...
+2026-03-15 01:45:53, 624 __main__ INFO: PINN training completed in 15.49 seconds.
+2026-03-15 01:45:53, 624 __main__ INFO: Final Training Loss: 0.007589 at 250 epochs.
+2026-03-15 01:45:53, 628 __main__ INFO: Model checkpoint saved at D:\Python\year4_proj\complex_branch\PINN_FPGA_Project\complex\results\complex_pinn_checkpoint.pth.
+2026-03-15 01:45:53, 628 __main__ INFO: Evaluating PINN performance against baseline...
+2026-03-15 01:45:53, 647 __main__ INFO: Evaluation completed in 0.018000 seconds.
+2026-03-15 01:45:53, 659 __main__ INFO: EVM Summary - Distorted: 102.62%, SSFM: 1.54%, PINN: 12.32%
+2026-03-15 01:45:53, 665 __main__ INFO: SER Summary - Distorted: 86.80%, SSFM: 0.00%, PINN: 1.18%
+2026-03-15 01:45:53, 665 __main__ INFO: ONNX export not enabled. Skipping...
+2026-03-15 01:45:53, 665 __main__ INFO: FINN conversion not enabled. Skipping...
+2026-03-15 01:45:53, 666 __main__ INFO: Script execution completed successfully.
+2026-03-15 01:45:54, 312 __main__ INFO: Reinforcement Learning Iteration 12/15
+2026-03-15 01:45:54, 375 __main__ INFO: Log saved as pinn_complex.log in current working directory.
+2026-03-15 01:45:54, 375 __main__ INFO: Current working directory verified as project root: D:\Python\year4_proj\complex_branch\PINN_FPGA_Project.
+2026-03-15 01:45:54, 375 __main__ INFO: Results directory verified: D:\Python\year4_proj\complex_branch\PINN_FPGA_Project\complex\results.
+2026-03-15 01:45:57, 849 __main__ INFO: Script started for training complex PINN.
+2026-03-15 01:45:57, 964 __main__ INFO: Torch using cuda for training.
+2026-03-15 01:45:57, 999 __main__ INFO: Loaded model checkpoint from D:\Python\year4_proj\complex_branch\PINN_FPGA_Project\complex\results\complex_pinn_checkpoint.pth.
+2026-03-15 01:45:58, 000 __main__ INFO: Reinforce enabled. Continuing reinforcement training.
+2026-03-15 01:45:58, 009 __main__ INFO: Generated training data using SSFM with forward physics.
+2026-03-15 01:45:58, 019 __main__ INFO: Generated baseline recovery using SSFM with reverse physics.
+2026-03-15 01:45:58, 032 __main__ INFO: Starting PINN training...
+2026-03-15 01:46:13, 343 __main__ INFO: PINN training completed in 15.31 seconds.
+2026-03-15 01:46:13, 343 __main__ INFO: Final Training Loss: 0.007128 at 250 epochs.
+2026-03-15 01:46:13, 347 __main__ INFO: Model checkpoint saved at D:\Python\year4_proj\complex_branch\PINN_FPGA_Project\complex\results\complex_pinn_checkpoint.pth.
+2026-03-15 01:46:13, 347 __main__ INFO: Evaluating PINN performance against baseline...
+2026-03-15 01:46:13, 368 __main__ INFO: Evaluation completed in 0.019999 seconds.
+2026-03-15 01:46:13, 381 __main__ INFO: EVM Summary - Distorted: 107.61%, SSFM: 1.52%, PINN: 11.94%
+2026-03-15 01:46:13, 387 __main__ INFO: SER Summary - Distorted: 88.60%, SSFM: 0.00%, PINN: 0.92%
+2026-03-15 01:46:13, 387 __main__ INFO: ONNX export not enabled. Skipping...
+2026-03-15 01:46:13, 388 __main__ INFO: FINN conversion not enabled. Skipping...
+2026-03-15 01:46:13, 388 __main__ INFO: Script execution completed successfully.
+2026-03-15 01:46:14, 071 __main__ INFO: Reinforcement Learning Iteration 13/15
+2026-03-15 01:46:14, 127 __main__ INFO: Log saved as pinn_complex.log in current working directory.
+2026-03-15 01:46:14, 128 __main__ INFO: Current working directory verified as project root: D:\Python\year4_proj\complex_branch\PINN_FPGA_Project.
+2026-03-15 01:46:14, 128 __main__ INFO: Results directory verified: D:\Python\year4_proj\complex_branch\PINN_FPGA_Project\complex\results.
+2026-03-15 01:46:17, 528 __main__ INFO: Script started for training complex PINN.
+2026-03-15 01:46:17, 650 __main__ INFO: Torch using cuda for training.
+2026-03-15 01:46:17, 686 __main__ INFO: Loaded model checkpoint from D:\Python\year4_proj\complex_branch\PINN_FPGA_Project\complex\results\complex_pinn_checkpoint.pth.
+2026-03-15 01:46:17, 686 __main__ INFO: Reinforce enabled. Continuing reinforcement training.
+2026-03-15 01:46:17, 696 __main__ INFO: Generated training data using SSFM with forward physics.
+2026-03-15 01:46:17, 706 __main__ INFO: Generated baseline recovery using SSFM with reverse physics.
+2026-03-15 01:46:17, 718 __main__ INFO: Starting PINN training...
+2026-03-15 01:46:33, 186 __main__ INFO: PINN training completed in 15.47 seconds.
+2026-03-15 01:46:33, 186 __main__ INFO: Final Training Loss: 0.006269 at 250 epochs.
+2026-03-15 01:46:33, 190 __main__ INFO: Model checkpoint saved at D:\Python\year4_proj\complex_branch\PINN_FPGA_Project\complex\results\complex_pinn_checkpoint.pth.
+2026-03-15 01:46:33, 191 __main__ INFO: Evaluating PINN performance against baseline...
+2026-03-15 01:46:33, 210 __main__ INFO: Evaluation completed in 0.019000 seconds.
+2026-03-15 01:46:33, 223 __main__ INFO: EVM Summary - Distorted: 99.89%, SSFM: 1.49%, PINN: 11.21%
+2026-03-15 01:46:33, 229 __main__ INFO: SER Summary - Distorted: 84.73%, SSFM: 0.00%, PINN: 0.68%
+2026-03-15 01:46:33, 229 __main__ INFO: ONNX export not enabled. Skipping...
+2026-03-15 01:46:33, 229 __main__ INFO: FINN conversion not enabled. Skipping...
+2026-03-15 01:46:33, 230 __main__ INFO: Script execution completed successfully.
+2026-03-15 01:46:33, 882 __main__ INFO: Reinforcement Learning Iteration 14/15
+2026-03-15 01:46:33, 937 __main__ INFO: Log saved as pinn_complex.log in current working directory.
+2026-03-15 01:46:33, 937 __main__ INFO: Current working directory verified as project root: D:\Python\year4_proj\complex_branch\PINN_FPGA_Project.
+2026-03-15 01:46:33, 937 __main__ INFO: Results directory verified: D:\Python\year4_proj\complex_branch\PINN_FPGA_Project\complex\results.
+2026-03-15 01:46:37, 378 __main__ INFO: Script started for training complex PINN.
+2026-03-15 01:46:37, 505 __main__ INFO: Torch using cuda for training.
+2026-03-15 01:46:37, 539 __main__ INFO: Loaded model checkpoint from D:\Python\year4_proj\complex_branch\PINN_FPGA_Project\complex\results\complex_pinn_checkpoint.pth.
+2026-03-15 01:46:37, 540 __main__ INFO: Reinforce enabled. Continuing reinforcement training.
+2026-03-15 01:46:37, 549 __main__ INFO: Generated training data using SSFM with forward physics.
+2026-03-15 01:46:37, 559 __main__ INFO: Generated baseline recovery using SSFM with reverse physics.
+2026-03-15 01:46:37, 572 __main__ INFO: Starting PINN training...
+2026-03-15 01:46:53, 460 __main__ INFO: PINN training completed in 15.89 seconds.
+2026-03-15 01:46:53, 460 __main__ INFO: Final Training Loss: 0.007174 at 250 epochs.
+2026-03-15 01:46:53, 464 __main__ INFO: Model checkpoint saved at D:\Python\year4_proj\complex_branch\PINN_FPGA_Project\complex\results\complex_pinn_checkpoint.pth.
+2026-03-15 01:46:53, 464 __main__ INFO: Evaluating PINN performance against baseline...
+2026-03-15 01:46:53, 483 __main__ INFO: Evaluation completed in 0.019001 seconds.
+2026-03-15 01:46:53, 495 __main__ INFO: EVM Summary - Distorted: 107.57%, SSFM: 1.51%, PINN: 12.00%
+2026-03-15 01:46:53, 501 __main__ INFO: SER Summary - Distorted: 88.48%, SSFM: 0.00%, PINN: 1.07%
+2026-03-15 01:46:53, 501 __main__ INFO: ONNX export not enabled. Skipping...
+2026-03-15 01:46:53, 501 __main__ INFO: FINN conversion not enabled. Skipping...
+2026-03-15 01:46:53, 502 __main__ INFO: Script execution completed successfully.
+2026-03-15 01:46:54, 166 __main__ INFO: Final Reinforcement Learning Iteration 15/15
+2026-03-15 01:46:54, 229 __main__ INFO: Log saved as pinn_complex.log in current working directory.
+2026-03-15 01:46:54, 230 __main__ INFO: Current working directory verified as project root: D:\Python\year4_proj\complex_branch\PINN_FPGA_Project.
+2026-03-15 01:46:54, 230 __main__ INFO: Results directory verified: D:\Python\year4_proj\complex_branch\PINN_FPGA_Project\complex\results.
+2026-03-15 01:46:57, 670 __main__ INFO: Script started for training complex PINN.
+2026-03-15 01:46:57, 785 __main__ INFO: Torch using cuda for training.
+2026-03-15 01:46:57, 820 __main__ INFO: Loaded model checkpoint from D:\Python\year4_proj\complex_branch\PINN_FPGA_Project\complex\results\complex_pinn_checkpoint.pth.
+2026-03-15 01:46:57, 821 __main__ INFO: Reinforce enabled. Continuing reinforcement training.
+2026-03-15 01:46:57, 831 __main__ INFO: Generated training data using SSFM with forward physics.
+2026-03-15 01:46:57, 841 __main__ INFO: Generated baseline recovery using SSFM with reverse physics.
+2026-03-15 01:46:57, 854 __main__ INFO: Starting PINN training...
+2026-03-15 01:47:14, 005 __main__ INFO: PINN training completed in 16.15 seconds.
+2026-03-15 01:47:14, 006 __main__ INFO: Final Training Loss: 0.006103 at 250 epochs.
+2026-03-15 01:47:14, 010 __main__ INFO: Model checkpoint saved at D:\Python\year4_proj\complex_branch\PINN_FPGA_Project\complex\results\complex_pinn_checkpoint.pth.
+2026-03-15 01:47:14, 010 __main__ INFO: Evaluating PINN performance against baseline...
+2026-03-15 01:47:14, 032 __main__ INFO: Evaluation completed in 0.022003 seconds.
+2026-03-15 01:47:14, 045 __main__ INFO: EVM Summary - Distorted: 108.55%, SSFM: 1.52%, PINN: 11.10%
+2026-03-15 01:47:14, 051 __main__ INFO: SER Summary - Distorted: 88.30%, SSFM: 0.00%, PINN: 0.55%
+2026-03-15 01:47:14, 052 __main__ INFO: Exporting QAT model to QONNX format at 'D:\Python\year4_proj\complex_branch\PINN_FPGA_Project\complex\results\complex_pinn.onnx'...
+2026-03-15 01:47:14, 263 __main__ INFO: Successfully exported QONNX model to D:\Python\year4_proj\complex_branch\PINN_FPGA_Project\complex\results\complex_pinn.onnx.
+2026-03-15 01:47:14, 263 __main__ INFO: Starting conversion of QONNX model to FINN format...
+2026-03-15 01:47:15, 232 __main__ INFO: Successfully converted QONNX model to FINN format as model.onnx.
+2026-03-15 01:47:15, 233 __main__ INFO: Script execution completed successfully.
+2026-03-15 01:47:15, 903 __main__ INFO: Reinforcement learning iterations completed.
+2026-03-15 01:47:15, 904 __main__ INFO: Final evaluation with new random input for metrics and visualization.
+2026-03-15 01:47:15, 967 __main__ INFO: Log saved as pinn_complex.log in current working directory.
+2026-03-15 01:47:15, 967 __main__ INFO: Current working directory verified as project root: D:\Python\year4_proj\complex_branch\PINN_FPGA_Project.
+2026-03-15 01:47:15, 968 __main__ INFO: Results directory verified: D:\Python\year4_proj\complex_branch\PINN_FPGA_Project\complex\results.
+2026-03-15 01:47:19, 537 __main__ INFO: Script started for training complex PINN.
+2026-03-15 01:47:19, 650 __main__ INFO: Torch using cuda for training.
+2026-03-15 01:47:19, 687 __main__ INFO: Loaded model checkpoint from D:\Python\year4_proj\complex_branch\PINN_FPGA_Project\complex\results\complex_pinn_checkpoint.pth.
+2026-03-15 01:47:19, 687 __main__ INFO: Reinforce not enabled. Skipping reinforcement training and proceeding to evaluation.
+2026-03-15 01:47:19, 697 __main__ INFO: Generated training data using SSFM with forward physics.
+2026-03-15 01:47:19, 706 __main__ INFO: Generated baseline recovery using SSFM with reverse physics.
+2026-03-15 01:47:19, 718 __main__ INFO: Evaluating PINN performance against baseline...
+2026-03-15 01:47:19, 895 __main__ INFO: Evaluation completed in 0.176001 seconds.
+2026-03-15 01:47:19, 908 __main__ INFO: EVM Summary - Distorted: 108.57%, SSFM: 1.51%, PINN: 13.96%
+2026-03-15 01:47:19, 915 __main__ INFO: SER Summary - Distorted: 88.58%, SSFM: 0.00%, PINN: 2.20%
+2026-03-15 01:47:20, 134 __main__ INFO: Constellation comparison figure saved at D:\Python\year4_proj\complex_branch\PINN_FPGA_Project\complex\results\constellation_comparison.png.
+2026-03-15 01:47:20, 134 __main__ INFO: ONNX export not enabled. Skipping...
+2026-03-15 01:47:20, 134 __main__ INFO: FINN conversion not enabled. Skipping...
+2026-03-15 01:47:20, 134 __main__ INFO: Script execution completed successfully.
+2026-03-15 01:47:20, 821 __main__ INFO: Total execution time: 517.21 seconds.
