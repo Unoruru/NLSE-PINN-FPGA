@@ -5,13 +5,11 @@ env/
 *.pth
 *.pt
 *.onnx
+*.qonnx
+*.qnnx
 
 # Ignore .gemini files
 *.gemini
-
-nul
-*.qonnx
-*.qnnx
 
 # Ignore Agents directory
 *.gemini/
@@ -20,3 +18,8 @@ nul
 qonnx2finn/*
 !qonnx2finn/qonnx2finn.py
 !qonnx2finn/req.txt
+
+# Ignore logs and results
+*.log
+!complex/sample_results/*
+complex/results/*
