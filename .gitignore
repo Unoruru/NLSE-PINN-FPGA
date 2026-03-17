@@ -1,12 +1,12 @@
 # env
 env/
 
-# Ignore large model weights
-*.pth
-*.pt
-*.onnx
-*.qonnx
-*.qnnx
+# # Ignore large model weights
+# *.pth
+# *.pt
+# *.onnx
+# *.qonnx
+# *.qnnx
 
 # Ignore .gemini files
 *.gemini
