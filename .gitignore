@@ -26,3 +26,6 @@ qonnx2finn/*
 *.log
 !complex/sample_results/*
 complex/results/*
+.venv/
+__pycache__/
+.claude/
