@@ -14,9 +14,6 @@ env/
 # Ignore Agents directory
 *.gemini/
 
-# Ignore .claude directory
-.claude/
-
 # Ignore conversion folder except script and req
 qonnx2finn/*
 !qonnx2finn/qonnx2finn.py
