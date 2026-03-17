@@ -108,7 +108,17 @@ The Star-QAM constellation consists of 16 symbols arranged in two concentric rin
 
 ## Results
 
-Results are generated upon running the script. Output files are saved to `STAR/results/`:
+Using the default hyperparameters and running the script with reinforcement training, the following metrics were obtained:
+
+```log
+2026-03-17 02:03:07, 108 __main__ INFO: EVM Summary - Distorted: 109.20%, SSFM: 1.51%, PINN: 13.87%
+2026-03-17 02:03:07, 117 __main__ INFO: SER Summary - Distorted: 88.55%, SSFM: 0.00%, PINN: 1.80%
+```
+
+The following visual was generated, which illustrates the successful recovery of Star-QAM.
+![results](results/constellation_comparison.png)
+
+Output files saved to `STAR/results/`:
 - `star_pinn_checkpoint.pth` — trained model weights
 - `star_raw.onnx` — exported QONNX model
 - `star_FINN_ready.onnx` — FINN-converted model for FPGA deployment
