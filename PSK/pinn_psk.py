@@ -1,5 +1,5 @@
-# Script for training complex PINN for multi-signal-type prediction
-# Last Updated: 13 Mar 2026
+# Script for training 16-PSK PINN for multi-signal-type prediction
+# Last Updated: 16 Mar 2026
 
 # See readme.md for detailed instructions on running this script, including environment setup and dependencies.
 
@@ -17,7 +17,7 @@ logger.setLevel(logging.INFO)
 if logger.hasHandlers(): logger.handlers.clear()
 
 log_file_format = logging.Formatter('%(asctime)s, %(msecs)03d %(name)s %(levelname)s: %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
-file_handler = logging.FileHandler('pinn_complex.log', mode='a') # appends to log file each run (a append w overwrite)
+file_handler = logging.FileHandler('pinn_psk.log', mode='a') # appends to log file each run (a append w overwrite)
 file_handler.setLevel(logging.INFO)
 file_handler.setFormatter(log_file_format)
 
@@ -29,22 +29,23 @@ console_handler.setFormatter(console_file_format)
 logger.addHandler(file_handler)
 logger.addHandler(console_handler)
 
-logger.log(logging.INFO, "Log saved as pinn_complex.log in current working directory.")
+logger.log(logging.INFO, "Log saved as pinn_psk.log in current working directory.")
 
 # Check if current working directory is correct (should be project root)
-check_path = os.path.join(os.getcwd(), "complex", "pinn_complex.py")
+check_path = os.path.join(os.getcwd(), "PSK", "pinn_psk.py")
 if not os.path.isfile(check_path):
-    logger.log(logging.ERROR, f"Current working directory is not project root. Expected to find 'complex/pinn_complex.py' at {check_path}. Please change to project root and rerun.")
+    logger.log(logging.ERROR, f"Current working directory is not project root. Expected to find 'PSK/pinn_psk.py' at {check_path}. Please change to project root and rerun.")
     sys.exit()
 else:
     logger.log(logging.INFO, f"Current working directory verified as project root: {os.getcwd()}.")
-    # check results directory exists
-    results_dir = os.path.join(os.getcwd(), "complex", "results")
-    if not os.path.isdir(results_dir):
-        logger.log(logging.WARNING, f"Results directory does not exist. Creating: {results_dir}.")
-        os.makedirs(results_dir)
-    else:
-        logger.log(logging.INFO, f"Results directory verified: {results_dir}.")
+
+# check results directory exists
+results_dir = os.path.join(os.getcwd(), "PSK", "results")
+if not os.path.isdir(results_dir):
+    logger.log(logging.WARNING, f"Results directory does not exist. Creating: {results_dir}.")
+    os.makedirs(results_dir)
+else:
+    logger.log(logging.INFO, f"Results directory verified: {results_dir}.")
 
 # Add project root to path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
@@ -71,7 +72,7 @@ import brevitas.nn as qnn
 from brevitas.quant import Int8WeightPerTensorFloat, Int8ActPerTensorFloat, Int8Bias
 from brevitas.export import export_qonnx
 
-logger.log(logging.INFO, "Script started for training complex PINN.")
+logger.log(logging.INFO, "Script started for training 16-PSK PINN.")
 
 # Custom assertion function that logs errors before exiting
 def assertlog(condition, message):
@@ -83,9 +84,9 @@ def assertlog(condition, message):
 
 # Define complex PINN architecture
 class complexPINN(nn.Module):
-    def __init__(self, window_size=21, hlayers=3, hidden_dim=64, bit_width=8, act_bit_width=8):
+    def __init__(self, window_size=25, hlayers=3, hidden_dim=64, bit_width=8, act_bit_width=8):
         super().__init__()
-        
+
         layers = []
 
         # Input Layer (Window -> Hidden)
@@ -109,10 +110,10 @@ class complexPINN(nn.Module):
         return self.model(x)
 
 # SSFM for generating training data and reverse physics for baseline comparison
-def ssfm_nlse(A_in, L, direction="forward", beta2=-21e-27, gamma=1.3, dt=1e-12, n_steps=50):
+def ssfm_nlse(A_in, L, direction="forward", beta2=-21e-27, gamma=0.015, dt=1e-12, n_steps=50):
     # check direction validity
     assertlog(direction in ["forward", "reverse"], "Direction must be 'forward' or 'reverse'.")
-    
+
     # reverse physics for baseline comparison
     if direction == "reverse":
         gamma, beta2 = -gamma, -beta2
@@ -120,7 +121,7 @@ def ssfm_nlse(A_in, L, direction="forward", beta2=-21e-27, gamma=1.3, dt=1e-12, 
     omega = 2 * np.pi * np.fft.fftfreq(len(A_in), d=dt)
     dz = L / n_steps
     H = np.exp(-1j * (beta2 / 2) * (omega**2) * dz)
-    
+
     A = A_in.copy()
     for _ in range(n_steps):
         A *= np.exp(1j * gamma * np.abs(A)**2 * dz)  # Non-linear
@@ -144,23 +145,23 @@ def compute_physics_loss(model, x_window, beta2, gamma, scale_factor):
 
     # 1. Surrogate Forward Pass (Smooth Tanh)
     current_val = x_window
-    
+
     # We iterate directly over the Sequential blocks in model.model
     for layer in model.model:
         # Pass through Identity (gives input scale) and Linear (does the math)
         if isinstance(layer, (qnn.QuantIdentity, qnn.QuantLinear)):
             current_val = layer(current_val)
-            
+
         elif isinstance(layer, qnn.QuantHardTanh):
             # Unwrap the Brevitas QuantTensor to a raw PyTorch tensor
             if hasattr(current_val, 'value'):
                 raw_tensor = current_val.value
             else:
                 raw_tensor = current_val
-                
+
             # Use Tanh for smooth second derivatives during physics check
             current_val = torch.tanh(raw_tensor)
-    
+
     # Final unwrap just in case the last layer returned a QuantTensor
     if hasattr(current_val, 'value'):
         current_val = current_val.value
@@ -185,13 +186,13 @@ def compute_physics_loss(model, x_window, beta2, gamma, scale_factor):
 
     return torch.mean(res_real**2 + res_imag**2)
 
-# Training loop for the complex PINN
+# Training loop for the 16-PSK PINN
 def train(model, device, X_train, Y_train, epochs, lr, beta2, gamma, scale_factor):
     optimizer = optim.Adam(model.parameters(), lr=lr)
 
     train_start = time.time()
 
-    with trange(epochs, desc="Training Complex PINN") as t:
+    with trange(epochs, desc="Training 16-PSK PINN") as t:
         for e in t:
             model.train()
             optimizer.zero_grad()
@@ -225,20 +226,13 @@ def align_signal(ref, target):
 def evm(ref, target):
     return np.sqrt(np.mean(np.abs(ref - target)**2) / np.mean(np.abs(ref)**2)) * 100
 
-def classify_16qam(signal):
-    """Maps continuous complex signals to the nearest discrete 16-QAM points."""
-    # 1. Define the ideal levels for 16-QAM
-    levels = np.array([-3, -1, 1, 3])
-    # 2. Create the grid of 16 points
-    ideal_points = np.array([re + 1j*im for re in levels for im in levels])
-    # 3. Normalize ideal points to unit power (to match our aligned signals)
+def classify_16psk(signal):
+    """Maps continuous complex signals to the nearest discrete 16-PSK points."""
+    angles = np.linspace(0, 2*np.pi, 16, endpoint=False)
+    ideal_points = np.exp(1j * angles)
     ideal_points /= np.sqrt(np.mean(np.abs(ideal_points)**2))
-    
-    # 4. Find the closest ideal point for every received point
-    # signal: (N,) complex array, ideal_points: (16,) complex array
     distances = np.abs(signal[:, np.newaxis] - ideal_points)
     closest_indices = np.argmin(distances, axis=1)
-    
     return ideal_points[closest_indices], closest_indices
 
 def calculate_ser(clean_indices, recovered_indices):
@@ -254,7 +248,7 @@ def synchronize_signals(ref, target):
     # 1. Cross-correlation to find the delay
     correlation = np.correlate(np.abs(target), np.abs(ref), mode='full')
     delay = np.argmax(correlation) - (len(ref) - 1)
-    
+
     # 2. Shift the signals to match
     if delay > 0:
         # Target is delayed
@@ -266,7 +260,7 @@ def synchronize_signals(ref, target):
         target_sync = target[:delay]
     else:
         ref_sync, target_sync = ref, target
-        
+
     return ref_sync, target_sync
 
 def str2bool(v):
@@ -280,20 +274,20 @@ def str2bool(v):
         raise argparse.ArgumentTypeError('Boolean value expected.')
 
 def main():
-    parser = argparse.ArgumentParser(description="Training a Complex PINN for Optical Fibre Communication.")
+    parser = argparse.ArgumentParser(description="16-PSK PINN for Optical Fibre Communication.")
     parser.add_argument("--load", type=str2bool, default=False, help="Boolean. Load existing model checkpoint if available. Default False.")
-    parser.add_argument("--load_path", type=str, default="complex_pinn_checkpoint.pth", help="String. Path to model checkpoint for loading. Must be within the results directory. Default 'complex_pinn_checkpoint.pth'.")
+    parser.add_argument("--load_path", type=str, default="psk_pinn_checkpoint.pth", help="String. Path to model checkpoint for loading. Must be within the results directory. Default 'complex_pinn_checkpoint.pth'.")
     parser.add_argument("--reinforce", type=str2bool, default=False, help="Boolean. Reinforce physics during training with additional loss term. Requires load. Default False.")
     parser.add_argument("--metrics", type=str2bool, default=True, help="Boolean.Calculate and log EVM and SER metrics after training. Default True.")
     parser.add_argument("--visual", type=str2bool, default=True, help="Boolean.Generate and save constellation comparison figure after evaluation. Requires metrics. Default True.")
     parser.add_argument("--checkpoint", type=str2bool, default=True, help="Boolean. Save model checkpoint after training. Default True.")
-    parser.add_argument("--checkpoint_path", type=str, default="complex_pinn_checkpoint.pth", help="String. Path to save model checkpoint. Must be within the results directory. Default 'complex_pinn_checkpoint.pth'.")
+    parser.add_argument("--checkpoint_path", type=str, default="psk_pinn_checkpoint.pth", help="String. Path to save model checkpoint. Must be within the results directory. Default 'complex_pinn_checkpoint.pth'.")
     parser.add_argument("--epochs", type=int, default=3000, help="Integer. Number of training epochs. Default 3000.")
     parser.add_argument("--lr", type=float, default=5e-4, help="Float. Learning rate for training. Default 5e-4.")
     parser.add_argument("--save_inputs", type=str2bool, default=False, help="Boolean. Save generated training data and inputs as .pkl/.npy files for accelerator use. Default False.")
     parser.add_argument("--load_inputs", type=str2bool, default=False, help="Boolean. Load generated training data and inputs from .pkl/.npy files for accelerator use. Requires checkpoint and .pkl input file. Default False.")
     parser.add_argument("--onnx_export", type=str2bool, default=True, help="Boolean. Export trained model to ONNX format for FPGA deployment. Default True.")
-    parser.add_argument("--onnx_path", type=str, default="complex_pinn.onnx", help="String. Path to save ONNX model. Must be within the results directory. Default 'complex_pinn.onnx'.")
+    parser.add_argument("--onnx_path", type=str, default="psk_raw.onnx", help="String. Path to save ONNX model. Must be within the results directory. Default 'psk_raw.onnx'.")
     parser.add_argument("--finn_convert", type=str2bool, default=True, help="Boolean. Convert exported ONNX model to FINN format using qonnx2finn. Requires onnx_export. Default True.")
 
     args = parser.parse_args()
@@ -318,8 +312,8 @@ def main():
 
     # check onnx export path validity
     assertlog(args.onnx_path.endswith(".onnx"), "ONNX export path must end with .onnx extension.")
-    assertlog(args.onnx_path != "model.onnx", "ONNX export path cannot be 'model.onnx' to avoid overwriting FINN conversion output. Please specify a different name.")
-    
+    assertlog(args.onnx_path != "psk_FINN_ready.onnx", "ONNX export path cannot be 'psk_FINN_ready.onnx' to avoid overwriting FINN conversion output. Please specify a different name.")
+
     # sanity checks for arguments
     assertlog(args.epochs > 0, "Epoch count must be a positive integer.")
     assertlog(args.lr > 0, "Learning rate must be a positive float.")
@@ -364,28 +358,24 @@ def main():
             sys.exit()
     else:
         logger.log(logging.INFO, "No input loading specified. Will generate training data and inputs during execution for training and evaluation.")
-        # Generate 16-QAM
-        points = np.array([-3, -1, 1, 3])
-        re, im = np.meshgrid(points, points)
-        const = (re + 1j*im).flatten()
-        const /= np.sqrt(np.mean(np.abs(const)**2))
+        # Generate 16-PSK (uniform ring)
+        angles = np.linspace(0, 2*np.pi, 16, endpoint=False)
+        const = np.exp(1j * angles)
+        const /= np.sqrt(np.mean(np.abs(const)**2))  # already unit power
 
-        clean = const[np.random.randint(0, 16, 6000)]
+        clean = const[np.random.randint(0, len(const), 6000)]
         clean = clean / np.sqrt(np.mean(np.abs(clean)**2))
 
-        distorted = ssfm_nlse(clean, L, "forward", beta2, gamma, dt, n_steps) 
+        distorted = ssfm_nlse(clean, L, "forward", beta2, gamma, dt, n_steps)
         logger.log(logging.INFO, "Generated training data using SSFM with forward physics.")
         baseline = ssfm_nlse(distorted, L, "reverse", beta2, gamma, dt, n_steps) # ssfm baseline for comparison
         logger.log(logging.INFO, "Generated baseline recovery using SSFM with reverse physics.")
-
-        # scale_X = np.max(np.abs(distorted))
-        # scale_Y = np.max(np.abs(clean)) 
 
         scale_X = 1.0
         scale_Y = 1.0
 
         distorted_scaled = distorted / scale_X
-        clean_scaled = clean / scale_Y 
+        clean_scaled = clean / scale_Y
 
         X_train = windowing(distorted_scaled, sld_win)
         Y_train = torch.tensor(np.stack([np.real(clean_scaled), np.imag(clean_scaled)], axis=1), dtype=torch.float32)
@@ -398,7 +388,7 @@ def main():
         logger.log(logging.INFO, f"Generated training data and inputs saved to {inputs_save_path} for later evaluation.")
 
     if not skip_training:
-        # Train the complex PINN
+        # Train the 16-PSK PINN
         logger.log(logging.INFO, "Starting PINN training...")
         model = train(model, device, X_train, Y_train, epochs=args.epochs, lr=args.lr, beta2=beta2, gamma=gamma, scale_factor=scale_X)
         # Save Checkpoint
@@ -446,13 +436,13 @@ def main():
         logger.log(logging.INFO, f"EVM Summary - Distorted: {evm_dist:.2f}%, SSFM: {evm_ssfm:.2f}%, PINN: {evm_pinn:.2f}%")
 
         # Calculate SER
-        _, clean_idx_dist = classify_16qam(clean_dist_n)
-        _, clean_idx_dbp  = classify_16qam(clean_dbp_n)
-        _, clean_idx_pinn = classify_16qam(clean_pinn_n)
+        _, clean_idx_dist = classify_16psk(clean_dist_n)
+        _, clean_idx_dbp  = classify_16psk(clean_dbp_n)
+        _, clean_idx_pinn = classify_16psk(clean_pinn_n)
 
-        _, dist_idx  = classify_16qam(dist_f)
-        _, ssfm_idx  = classify_16qam(dbp_f)
-        _, pinn_idx  = classify_16qam(pinn_f)
+        _, dist_idx  = classify_16psk(dist_f)
+        _, ssfm_idx  = classify_16psk(dbp_f)
+        _, pinn_idx  = classify_16psk(pinn_f)
 
         ser_dist = calculate_ser(clean_idx_dist, dist_idx)
         ser_ssfm = calculate_ser(clean_idx_dbp, ssfm_idx)
@@ -463,7 +453,7 @@ def main():
             # visualize constellation diagrams
             fig, ax = plt.subplots(1, 3, figsize=(15, 5))
             sigs = [dist_f, dbp_f, pinn_f]
-            titles = ["Distorted", "SSFM Baseline", "8-bit PINN"]
+            titles = ["Distorted (16-PSK)", "SSFM Baseline", "8-bit PINN"]
             for i in range(3):
                 ax[i].scatter(sigs[i].real, sigs[i].imag, s=1, alpha=0.5)
                 ax[i].set_title(titles[i]); ax[i].set_aspect('equal')
@@ -476,12 +466,12 @@ def main():
         try:
             model.eval()
             model_cpu = model.cpu()
-            
+
             dummy_input = torch.randn(1, sld_win * 2, dtype=torch.float32)
-            
+
             export_qonnx(model_cpu, dummy_input, onnx_export_path, dynamo=False, opset_version=11)
             logger.log(logging.INFO, f"Successfully exported QONNX model to {onnx_export_path}.")
-            
+
         except Exception as e:
             logger.log(logging.ERROR, f"Failed to export QONNX model: {e}")
             sys.exit()
@@ -493,8 +483,8 @@ def main():
         logger.log(logging.INFO, "Starting conversion of QONNX model to FINN format...")
         try:
             from qonnx2finn.qonnx2finn import conv2finn
-            conv2finn(dir_path=results_dir, qonnx_name=args.onnx_path, output_name="model.onnx")
-            logger.log(logging.INFO, "Successfully converted QONNX model to FINN format as model.onnx.")
+            conv2finn(dir_path=results_dir, qonnx_name=args.onnx_path, output_name="psk_FINN_ready.onnx")
+            logger.log(logging.INFO, "Successfully converted QONNX model to FINN format as psk_FINN_ready.onnx.")
         except Exception as e:
             logger.log(logging.ERROR, f"Failed to convert to FINN format: {e}")
             sys.exit()

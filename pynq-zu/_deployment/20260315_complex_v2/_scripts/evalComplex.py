@@ -2,7 +2,7 @@
 # Last Updated: 16 Mar 2026
 
 import os
-import sys # <-- ADDED MISSING IMPORT
+import sys
 import pickle
 import numpy as np
 import matplotlib.pyplot as plt
@@ -78,11 +78,8 @@ def main():
         sys.exit()
     
     # dequantization
-    # 1. Replace this with the final_scale you extracted from Brevitas!
-    FINAL_SCALE = 0.00345  
-    # 2. Un-quantize integers to floats
+    FINAL_SCALE = 0.00345 # where required, extract value from brevitas
     outputs_float = outputs * FINAL_SCALE
-    # 3. Combine Real (col 0) and Imag (col 1) into a 1D complex array
     outputs_complex = outputs_float[:, 0] + 1j * outputs_float[:, 1]
 
     # evm
