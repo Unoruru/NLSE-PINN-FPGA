@@ -1,4 +1,4 @@
-# # 20260315_complex_sigs_v2b Bitfiles
+## 20260315_complex_sigs_v2b Bitfiles
 
 This folder contains the files required for FINN to regenerate the bitfiles. Please see the releases [here](https://github.com/Anthony062966/PINN_FPGA_Project/releases/tag/sigs_pynqzu) for the appropriate pre-generated bitfiles.
 
