@@ -1,15 +1,12 @@
-# env
+# env, vscode etc
 env/
+.vscode/
+.venv/
+__pycache__/
 
-# # Ignore large model weights
-# *.pth
-# *.pt
-# *.onnx
-# *.qonnx
-# *.qnnx
-
-# Ignore .gemini files
+# Ignore AI agent files
 *.gemini
+*.claude/
 
 # Ignore Agents directory
 *.gemini/
@@ -23,6 +20,4 @@ qonnx2finn/*
 *.log
 !complex/sample_results/*
 complex/results/*
-.venv/
-__pycache__/
-.claude/
+

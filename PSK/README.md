@@ -114,4 +114,4 @@ Using the default hyperparameters and running the script to train from scratch, 
 ```
 
 The following visual was generated, which illustrates the successful recovery of 16-PSK.
-![results](results/constellation_comparison.png)
+![results](sample_results/constellation_comparison.png)

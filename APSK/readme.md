@@ -140,4 +140,4 @@ Running the model provides 2 sets of metrics and 1 set of visualisation. The met
 
 Using the default hyperparameters and running the script to train from scratch, the following visual was generated, which illustrates the recovery of 16-APSK.
 
-![results](results/constellation_comparison.png)
+![results](sample_results/constellation_comparison.png)

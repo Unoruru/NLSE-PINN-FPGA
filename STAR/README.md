@@ -116,7 +116,7 @@ Using the default hyperparameters and running the script with reinforcement trai
 ```
 
 The following visual was generated, which illustrates the successful recovery of Star-QAM.
-![results](results/constellation_comparison.png)
+![results](sample_results/constellation_comparison.png)
 
 Output files saved to `STAR/results/`:
 - `star_pinn_checkpoint.pth` — trained model weights
