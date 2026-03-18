@@ -20,4 +20,6 @@ qonnx2finn/*
 *.log
 !complex/sample_results/*
 complex/results/*
-
+APSK/results/*
+PSK/results/*
+STAR/results/*
