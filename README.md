@@ -1,6 +1,8 @@
-# FPGA-Accelerated Physics Informed Neural Network for Optical Fibre Communications
+# FPGA-Accelerated Physics Informed Neural Network for Optical Fibre Communications (Complex Network)
 
-Physics-Informed Neural Network (PINN) that solves the Nonlinear Schrodinger Equation (NLSE) with second-order dispersion and Kerr nonlinearity, then quantizes the trained model to configurable 4-bit, 8-bit, or 16-bit precision via Quantization-Aware Training (QAT) for FPGA deployment.
+This script trains a Physics Informed Neural Network (PINN) to recover 16-QAM signals received at the endpoint through optical fibre. Noise is introduced due to physical constraints described by the Non-Linear Schrodingers Equation (NLSE).
+
+This file explains the 16-QAM version under ``complex/``. See ``readme.md`` files in other directories for explanations of adapted scripts and legacy scripts.
 
 ## Physics Background
 
@@ -16,180 +18,116 @@ where `A(z,t)` is the complex envelope, `beta2` is the group-velocity dispersion
 
 ```
 PINNs QAT/
-├── shared/                          # Shared modules used by both FP32 and QAT
-│   ├── __init__.py
-│   ├── config.py                    # PINNConfig dataclass — all hyperparameters
-│   ├── ssfm.py                      # Split-Step Fourier Method solver
-│   ├── pinn_base.py                 # PINN_NLSE model + PDE residual function
-│   ├── training.py                  # Training loop, normalization, collocation, seeding
-│   └── evaluation.py                # Full-field evaluation, plotting, error metrics
+├── complex/
+│   ├── pinn_complex.py              # Complex Quantization Aware PINN Training and Conversion Script (16-QAM)
+|   ├── run_complex.py               # Script for reinforcement training
+│   ├── req.txt                      # Requirements to run complex pinn script
+│   └── sample_results/              # Folder with generated sample for results + test pattern + accelerator inputs
 │
-├── software/
-│   ├── train_fp32.py                # Step 1: Train FP32 PINN → fp32_pinn_best.pth
-│   └── pinn_2disp_kerr/
-│       ├── PINN_2disp_kerr.py       # [DEPRECATED] Original monolithic FP32 script
-│       └── requirements.txt
+├── APSK/                            # Complex PINN adaptation for 16-APSK
+│   ├── pinn_apsk.py                 # Complex Quantization Aware PINN Training and Conversion Script (16-APSK)
+|   ├── run_apsk.py                  # Script for reinforcement training
+│   ├── sample_results/              # Folder with generated sample for results + test pattern + accelerator inputs        
+│   └── readme.md                    # Readme file explaining adaptations
 │
-├── quantization/
-│   ├── train_qat.py                 # Step 2: QAT fine-tuning → .qonnx export
-│   ├── qat_model.py                 # QuantPINN_NLSE (QuantHardTanh) + FP32→QAT loader
-│   ├── qat_pinn.py                  # [DEPRECATED] Original monolithic QAT script
-│   ├── qat_pinn2.py                 # [DEPRECATED] Intermediate QAT revision
-│   └── requirements.txt             # All dependencies (covers both FP32 and QAT)
+├── PSK/                             # Complex PINN adaptation for 16-PSK
+│   ├── pinn_psk.py                  # Complex Quantization Aware PINN Training and Conversion Script (16-PSK)
+|   ├── run_psk.py                   # Script for reinforcement training
+│   ├── sample_results/              # Folder with generated sample for results + test pattern + accelerator inputs        
+│   └── readme.md                    # Readme file explaining adaptations
+│
+├── STAR/                            # Complex PINN adaptation for STAR-QAM
+│   ├── pinn_star.py                 # Complex Quantization Aware PINN Training and Conversion Script (STAR-QAM)
+|   ├── run_star.py                  # Script for reinforcement training
+│   ├── sample_results/              # Folder with generated sample for results + test pattern + accelerator inputs        
+│   └── readme.md                    # Readme file explaining adaptations
 │
 ├── qonnx2finn/
-│   ├── qonnx2finn.py                # Step 3: Convert QONNX export → FINN-ONNX
-│   └── req.txt                      # FINN/QONNX dependencies
+│   ├── qonnx2finn.py                # Function for FINN-ONNX export conversion
+│   └── req.txt                      # FINN/QONNX dependencies [Only **IF** Running Independently]
 │
-└── README.md
+├── legacy/                          # [DEPRECATED] Legacy simple guassian pulse scripts 
+│
+└── README.md                        # This file
 ```
 
 ## Environment Setup
-
-A single requirements file covers FP32 and QAT dependencies:
-
+To run this complex quantization aware (QA) PINN training script, a Python virtual enviornment is required. **The expected Python version is 3.12.1.**
+It is expected that all commands should run from the project root directory. To begin, create a virtual enviornment by the following:
 ```bash
-pip install -r quantization/requirements.txt
+python -m venv env
 ```
-
-For the FINN conversion step, install the FINN-specific dependencies separately:
-
+Activate the enviornment by the following:
 ```bash
-pip install -r qonnx2finn/req.txt
+./env/scripts/activate/ # Windows
+./env/bin/activate/     # macOS/Linux
 ```
-
-Key packages: `torch`, `brevitas`, `numpy`, `scipy`, `matplotlib`, `onnx`, `qonnx`, `finn`.
+Install the required dependencies by the following:
+```bash
+pip install --no-deps --ignore-requires-python -r complex/req.txt # Designed for CUDA-accelerated workflows
+```
+Flags are required as there are dependency and python version conflicts between packages. This has been tested to be functional for the script.
 
 ## Quick Start
-
-The workflow has three steps. Steps 1 and 2 should be run from the project root directory.
-
-### Step 1 — Train the FP32 PINN
-
+To begin, simply run the script by calling:
 ```bash
-python software/train_fp32.py
+python complex/pinn_complex.py
 ```
+This will invoke training from scratch and will generate all available outputs (including metrics, visuals, checkpoints and exports).
 
-Trains a standard float32 PINN from scratch using SSFM ground truth. Saves the best checkpoint to `software/fp32_pinn_best.pth`.
-
-### Step 2 — QAT Fine-Tuning
-
+Additional CLI options are available. Please run:
 ```bash
-# 8-bit (default)
-python quantization/train_qat.py --fp32-checkpoint software/fp32_pinn_best.pth
-
-# 4-bit
-python quantization/train_qat.py --fp32-checkpoint software/fp32_pinn_best.pth --bit-width 4
-
-# 16-bit
-python quantization/train_qat.py --fp32-checkpoint software/fp32_pinn_best.pth --bit-width 16
+python complex/pinn_complex.py --help
 ```
+for more information.
 
-Loads the pretrained FP32 weights into a quantized model (Brevitas) at the specified bit width (4, 8, or 16), fine-tunes with the same physics-informed loss, and exports a `.qonnx` file for FPGA synthesis (e.g., AMD/Xilinx FINN). The `--bit-width` flag controls both weight and activation quantization precision (default: 8).
-
-Additional CLI options for tuning QAT training:
-
-| Flag | Description | Default |
-|------|-------------|---------|
-| `--qat-epochs` | Total QAT training epochs | 3000 |
-| `--qat-warmup` | Warmup scheduler epochs | 500 |
-| `--qat-nres` | Number of collocation points | 15000 |
-| `--output-dir` | Directory for output files | script directory |
-| `--export-only` | Skip plots/evaluation, only train and export | off |
-
-Example with custom QAT parameters:
-
+## Reinforcement Training Quick Start
+In order for the network to be able to predict the recovery for different input 16-QAM, reinforcement training is required. This can be done by calling:
 ```bash
-python quantization/train_qat.py \
-  --fp32-checkpoint software/fp32_pinn_best.pth \
-  --bit-width 4 \
-  --qat-epochs 5000 \
-  --qat-warmup 800 \
-  --qat-nres 20000
+python complex/run_complex.py
 ```
+This will invoke an initial 3000 epoch training, then reinforcement training of ``x`` iterations at ``y`` epochs each, based on either default or CLI inputs.
 
-### Step 3 — FINN Conversion
-
+Additional CLI options are available. Please run:
 ```bash
-python qonnx2finn/qonnx2finn.py \
-  --dir quantization \
-  --input qat_8bit_pinn_model.qonnx \
-  --output finn_8bit_model.onnx
+python complex/run_complex.py --help
 ```
-
-Converts the QONNX export from Step 2 into a FINN-compatible ONNX format for hardware synthesis. The `--dir` flag specifies the directory containing the `.qonnx` file, `--input` is the exported model filename, and `--output` is the desired FINN-ONNX filename.
+for more information.
 
 ## Architecture
 
-### FP32 Model (`PINN_NLSE` in `shared/pinn_base.py`)
+The architecture of the model is as follows:
 
 ```
-Input (z, t) → Linear(2→50) → Tanh
-             → Linear(50→50) → Tanh  (×3)
-             → Linear(50→2) → Output (u, v)
+Input (W×2) → QuantIdentity → QuantLinear(W×2 → H) → QuantHardTanh
+            → QuantIdentity → QuantLinear(H → H)   → QuantHardTanh  (×L)
+            → QuantIdentity → QuantLinear(H → 2)   → Output (Re, Im)
+
+W = window_size, H = hidden_dim, L = hlayers
 ```
 
-### QAT Model (`QuantPINN_NLSE` in `quantization/qat_model.py`)
+The input takes a flattened sliding window of complex symbols, doubled to account for both ``Re`` and ``Im`` components. The model uses `QuantHardTanh` instead of `Tanh` as FINN is unable to synthesize `nn.Tanh` (or `qnn.QuantTanh`) into hardware logic. `QuantHardTanh` clamps outputs to [-1, 1] and fuses the activation with requantization into a single FINN-synthesizable node. A `QuantIdentity` layer at the input quantizes the incoming (z, t) values before the first linear layer. The final linear layer funnels the 64-wide hidden dimension down to an output size of 2, representing the single corrected real and imaginary values of the target symbol.
 
-```
-Input (z, t) → QuantIdentity → QuantLinear(2→50) → QuantHardTanh
-             → QuantLinear(50→50) → QuantHardTanh  (×3)
-             → QuantLinear(50→2) → Output (u, v)
-```
+## Output Metrics/Visuals
 
-The QAT model uses `QuantHardTanh` instead of `Tanh` because FINN cannot synthesize `nn.Tanh` (or `qnn.QuantTanh`) into hardware logic. `QuantHardTanh` clamps outputs to [-1, 1] and fuses the activation with requantization into a single FINN-synthesizable node. A `QuantIdentity` layer at the input quantizes the incoming (z, t) values before the first linear layer.
-
-## QAT Training Details
-
-QAT fine-tuning uses several mechanisms to recover accuracy lost from quantization:
-
-- **Warmup-cosine LR schedule**: Learning rate ramps linearly from 0 to `qat_lr` over 500 warmup epochs, then decays via cosine annealing. This prevents early gradient instability in the quantized graph.
-- **IC boost during warmup**: The initial-condition loss weight is multiplied by 2× during the warmup phase, anchoring the quantized model to the correct pulse shape before the PDE loss takes over.
-- **Increased collocation points**: QAT uses 15,000 collocation points (vs 10,000 for FP32) to compensate for reduced representational capacity at lower bit widths.
-- **Extended training**: 3,000 epochs by default (vs 10,000 for FP32, but starting from pretrained weights).
-
-## Output Plots
-
-Both FP32 (`software/train_fp32.py`) and QAT (`quantization/train_qat.py`) produce the same set of diagnostic plots. QAT plot filenames are prefixed with `qat_{bit}bit_`.
-
-- **`loss_curves.png`**: Training loss components (PDE residual, initial condition, boundary) over epochs.
-- **`zL_comparison.png`**: Pulse intensity at the final propagation distance (z=L) — PINN prediction (dashed) vs SSFM reference (solid).
-- **`error_density.png`**: Normalized error density heatmap over the full spatiotemporal domain (z vs t).
-- **`z0_check.png`**: Initial condition verification at z=0, confirming the network learns the starting Gaussian pulse profile.
-- **`abs_error.png`**: Absolute error heatmap across the full domain.
+Running the model provides 2 sets of metrics and 1 set of visualisation. The metrics include EVM (Error Vector Magnitude) and SER (Symbol Error Rate). The visualisation shows the distorted, SSFM-recovered and PINN-recovered constellation diagram of the 16-QAM signal, with symbols normalised.
 
 ## Default Hyperparameters
 
-All defaults are defined in `shared/config.py` (`PINNConfig` dataclass).
-
-### Physics
-
 | Parameter | Value | Description |
 |-----------|-------|-------------|
-| `beta2` | -1.0 | Second-order dispersion |
-| `gamma` | 1.0 | Kerr nonlinear coefficient |
-| `L` | 1.0 | Propagation length |
-| `P0` | 1.0 | Peak power |
-| `T0` | 1.0 | Pulse width |
-
-### FP32 Training
-
-| Parameter | Value | Description |
-|-----------|-------|-------------|
-| `n_epochs` | 10,000 | Training epochs |
-| `lr` | 1e-3 | Learning rate |
-| `N_res` | 10,000 | Collocation points |
-| `hidden_dim` | 50 | Hidden layer width |
-| `layers` | 4 | Hidden layers |
-
-### QAT Training
-
-| Parameter | Value | Description |
-|-----------|-------|-------------|
-| `qat_epochs` | 3,000 | Training epochs |
-| `qat_lr` | 5e-4 | Learning rate |
-| `qat_warmup_epochs` | 500 | Warmup epochs |
-| `qat_N_res` | 15,000 | Collocation points |
-| `qat_ic_boost_factor` | 2.0 | IC loss multiplier during warmup |
-| `weight_bit_width` | 8 | Weight quantization bits |
+| `epochs` | 3,000 | Training epochs |
+| `lr` | 5e-4 | Learning rate |
+| `bit_width` | 8 | Weight quantization bits |
 | `act_bit_width` | 8 | Activation quantization bits |
+
+## Results
+Using the default hyperparameters and running the script to train from scratch, the following metrics were obtained:
+
+```log
+2026-03-15 01:47:19, 908 __main__ INFO: EVM Summary - Distorted: 108.57%, SSFM: 1.51%, PINN: 13.96%
+2026-03-15 01:47:19, 915 __main__ INFO: SER Summary - Distorted: 88.58%, SSFM: 0.00%, PINN: 2.20%
+```
+
+The following visual was generated, which illustrates the successful recovery of 16-QAM.
+![results](sample_results/constellation_comparison.png)
