@@ -80,7 +80,7 @@ def main():
         batch_size_driver = 1
     else:
         ibufs = np.load("accelerator_inputs.npy")
-        batch_size_driver = len(ibufs) # placeholder, implement logic here
+        batch_size_driver = len(ibufs)
 
     driver = FINNExampleOverlay(
             bitfile_name=str(bitfile_path),
@@ -99,16 +99,11 @@ def main():
             save_results_csv(res, "throughput_results.csv")
         return
 
-    # create inputs for execution on board
-    # ibufs = []
-    # d_inp = np.array(ins, dtype=np.int8)
-    # ibufs.append(d_inp)
-
     # execute on board
     exe_start = time.time()
     obuf = driver.execute(ibufs)
     exe_end = time.time()
-    logging.info("Execution time: %.6f seconds", exe_end - exe_start)
+    logging.info("Run time: %.6f seconds", exe_end - exe_start)
 
     # save outputs to files next to inputs
     if not isinstance(obuf, list):
