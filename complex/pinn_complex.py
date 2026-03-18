@@ -357,7 +357,7 @@ def main():
     if args.load_inputs:
         try:
             with open(inputs_save_path, "rb") as f:
-                clean, distorted, baseline, X_train, Y_train, scale_X, scale_Y, clean_scaled, distorted_scaled = pickle.load(f)
+                clean, distorted, baseline, X_train, Y_train, clean_scaled, distorted_scaled = pickle.load(f)
             logger.log(logging.INFO, f"Loaded training data and inputs from {inputs_save_path} for evaluation.")
         except Exception as e:
             logger.log(logging.ERROR, f"Failed to load inputs: {e}. Ensure the file exists and is a valid .pkl file. Exiting...")
