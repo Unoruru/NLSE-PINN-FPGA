@@ -5,11 +5,8 @@ env/
 __pycache__/
 
 # Ignore AI agent files
-*.gemini
-*.claude/
-
-# Ignore Agents directory
 *.gemini/
+*.claude/
 
 # Ignore conversion folder except script and req
 qonnx2finn/*
@@ -18,7 +15,6 @@ qonnx2finn/*
 
 # Ignore logs and results
 *.log
-!complex/sample_results/*
 complex/results/*
 APSK/results/*
 PSK/results/*
