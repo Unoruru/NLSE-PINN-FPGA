@@ -64,7 +64,7 @@ Activate the enviornment by the following:
 ```
 Install the required dependencies by the following:
 ```bash
-pip install --no-deps --ignore-requires-python -r complex/req.txt # Designed for CUDA-accelerated workflows
+pip install --no-deps --ignore-requires-python -r req.txt # Designed for CUDA-accelerated workflows
 ```
 Flags are required as there are dependency and python version conflicts between packages. This has been tested to be functional for the script.
 
@@ -104,6 +104,13 @@ This requires the trained network checkpoint, and generates ``generated_inputs.p
 python complex/pinn_complex.py --load True --load_inputs True --onnx_export False --finn_convert False
 ```
 This will load the inputs and regenerate both the metrics and the visual. Note that whilst the network and inputs remain the same, the outputs can still differ due to non-determinstic behavior in pytorch.
+
+## Benchmarking
+To run benchmarking on the trained networks, ensure that both the trained network checkpoint (``.pth``) and generated inputs (``.pkl``) files are available. Run the benchmarking script by calling:
+```bash
+python benchmark.py --device {device} --load_path {load_path} --inputs_path {inputs_path}
+```
+Replace the appropriate variables in curly brackets with appropriate values. {device} accepts either "cpu" or "cuda", with "cpu" being the default fallback. {load_path} and {inputs_path} should be path directories relative to the current working directory. Results are saved as plain text in the ``benchmark.log`` log file.
 
 ## Architecture
 
