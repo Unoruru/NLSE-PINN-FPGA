@@ -43,7 +43,7 @@ def main():
     parser = argparse.ArgumentParser(description='Benchmark ComplexPINN on CPU/GPU vs FPGA accelerator')
     parser.add_argument('--device', type=str, default='cpu', choices=['cpu', 'cuda'], help='Device to benchmark on (default: cpu)')
     parser.add_argument('--load_path', type=str, default='complex/sample_results/complex_pinn_checkpoint.pth', help='Path to load pre-trained model weights (default: complex/sample_results/complex_pinn_checkpoint.pth)')
-    parser.add_argument('--inputs_path', type=str, default='complex/sample_results/generated_inputs.pkl', help='Path to load sample input data (default: complex/sample_results/generated_inputs.pkl)')
+    parser.add_argument('--inputs_path', type=str, default='complex/sample_results/generated_inputs.pklv2', help='Path to load sample input data (default: complex/sample_results/generated_inputs.pklv2)')
 
     args = parser.parse_args()
 
@@ -77,8 +77,12 @@ def main():
     # Load sample input data for benchmarking
     try:
         with open(inputs_save_path, "rb") as f:
-            clean, distorted, baseline, X_train, Y_train, clean_scaled, distorted_scaled = pickle.load(f)
-            logger.log(logging.INFO, f"Loaded training data and inputs from {inputs_save_path} for evaluation.")
+            if inputs_save_path.endswith('.pklv2'): # new version includes signal type for validation
+                sig_type, clean, distorted, baseline, X_train, Y_train, clean_scaled, distorted_scaled = pickle.load(f)
+                logger.log(logging.INFO, f"Loaded signal type {sig_type} from {inputs_save_path} for evaluation.")
+            else:
+                clean, distorted, baseline, X_train, Y_train, clean_scaled, distorted_scaled = pickle.load(f)
+                logger.log(logging.INFO, f"Loaded training data and inputs from {inputs_save_path} for evaluation.")
     except Exception as e:
         logger.log(logging.ERROR, f"Failed to load inputs: {e}. Ensure the file exists and is a valid .pkl file. Exiting...")
         sys.exit()
