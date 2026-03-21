@@ -18,11 +18,11 @@ where `A(z,t)` is the complex envelope, `beta2` is the group-velocity dispersion
 
 ```
 PINNs QAT/
-├── complex/
-│   ├── pinn_complex.py              # Complex Quantization Aware PINN Training and Conversion Script (16-QAM)
-|   ├── run_complex.py               # Script for reinforcement training
-│   ├── req.txt                      # Requirements to run complex pinn script
-│   └── sample_results/              # Folder with generated sample for results + test pattern + accelerator inputs
+├── createPINN.py                    # Base script for training PINN for all supported modulation types
+├── trainPINN .py                    # [Default Entry Point] Reinforcement training script for PINNs
+├── benchmark.py                     # Script to run Pytorch benchmark on trained network
+├── cwd.check                        # Check file for scripts
+├── req.txt                          # Requirements to run complex pinn script
 │
 ├── consolidate/                     # Folder containing functions required for training/evaluating PINN
 │   ├── __init__.py
@@ -33,7 +33,7 @@ PINNs QAT/
 │
 ├── pynq-zu/                         # Files related to deployment on PYNQ-ZU FPGA accelerator
 │
-├── sample_results/                  # Folder containing sample results for various signal types
+├── sample_results/                  # Folder containing sample results for various signal types + saved/accelerator inputs
 │   ├── 16apsk/                
 |   ├── 16psk/          
 │   ├── 16qam/              
