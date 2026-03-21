@@ -106,7 +106,7 @@ python createPINN.py --load True --load_inputs True --onnx_export False --finn_c
 This will load the inputs and regenerate both the metrics and the visual. Note that whilst the network and inputs remain the same, the outputs can still differ due to non-determinstic behavior in pytorch.
 
 > [!NOTE]
-> The reinforcement training script will automatically generated the inputs. There is no need to run the command separately to generate the input files.
+> The reinforcement training script will automatically generate the inputs. There is no need to run the command separately to generate the input files.
 
 ## Benchmarking
 To run benchmarking on the trained networks, ensure that both the trained network checkpoint (``.pth``) and generated inputs (``.pkl``) files are available. Run the benchmarking script by calling:
