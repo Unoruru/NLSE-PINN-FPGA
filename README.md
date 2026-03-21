@@ -66,7 +66,7 @@ pip install --no-deps --ignore-requires-python -r req.txt # Designed for CUDA-ac
 Flags are required as there are dependency and python version conflicts between packages. This has been tested to be functional for the script.
 
 > [!NOTE]
-> The requirements file is specifcally designed for the use with a CUDA device, and has only been tested on CUDA workflows on Windows 11 with Pyhton 3.12.1. There is no guarentee that it will function on other setups.
+> The requirements file is specifcally designed for the use with a CUDA device, and has only been tested on CUDA workflows on Windows 11 with Python 3.12.1. There is no guarentee that it will function on other setups.
 
 ## Quick Start
 To begin, simply run the script by calling:
