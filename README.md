@@ -109,7 +109,7 @@ This will load the inputs and regenerate both the metrics and the visual. Note t
 > The reinforcement training script will automatically generate the inputs. There is no need to run the command separately to generate the input files.
 
 ## Benchmarking
-To run benchmarking on the trained networks, ensure that both the trained network checkpoint (``.pth``) and generated inputs (``.pkl``) files are available. Run the benchmarking script by calling:
+To run benchmarking on the trained networks, ensure that both the trained network checkpoint (``.pth``) and generated inputs (``.pklv2``) files are available. Run the benchmarking script by calling:
 ```bash
 python benchmark.py --device {device} --load_path {load_path} --inputs_path {inputs_path}
 ```
