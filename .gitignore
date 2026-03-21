@@ -15,6 +15,7 @@ qonnx2finn/*
 
 # Ignore logs and results
 *.log
+results/*
 complex/results/*
 APSK/results/*
 PSK/results/*
