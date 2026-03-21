@@ -145,7 +145,7 @@ Running the model provides 2 sets of metrics and 1 set of visualisation. The met
 |`reinforcement_epochs`|350|Training epochs for reinforcement training|
 
 ## Results
-Sample results are generated using default parameters with the reinforcement training ``trainPINN.py`` script. The following visuals were generated, illustrating the successful recovery of 16-QAM, 16-APSK, 16-PSK and STAR-QAM respectively. If required, metrics can be regenerated with ``createPINN.py`` by loading the model checkpoint and saved inputs using the ``--load_inputs True`` argument.
+Sample results are generated using default parameters with the reinforcement training ``trainPINN.py`` script. The following visuals were generated, illustrating the successful recovery of modulated signals.
 
 ![16qam_results](sample_results/16qam/16qam_constellation_comparison.png)
 ![16apsk_results](sample_results/16apsk/16apsk_constellation_comparison.png)
