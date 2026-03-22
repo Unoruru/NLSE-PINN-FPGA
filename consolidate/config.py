@@ -1,5 +1,5 @@
-# Script
-# Last Updated: 20 Mar 2026
+# Script containing the complex PINN architecture, training loop, and physics loss computation for the NLSE problem
+# Last Updated: 22 Mar 2026
 
 import numpy as np
 import torch
@@ -120,6 +120,7 @@ def compute_physics_loss(model, x_window, beta2, gamma, scale_factor):
 def train(model, device, X_train, Y_train, epochs, lr, beta2, gamma, scale_factor):
     optimizer = optim.Adam(model.parameters(), lr=lr)
     losses = []
+    accuracies = []
 
     train_start = time.time()
 
@@ -127,14 +128,17 @@ def train(model, device, X_train, Y_train, epochs, lr, beta2, gamma, scale_facto
         for e in t:
             model.train()
             optimizer.zero_grad()
-            loss = nn.MSELoss()(model(X_train.to(device)), Y_train.to(device))
+            mse_loss = nn.MSELoss()(model(X_train.to(device)), Y_train.to(device))
             physics_loss = compute_physics_loss(model, X_train.to(device), beta2, gamma, scale_factor=scale_factor)
-            loss = loss + 0.01 * physics_loss
+            loss = mse_loss + 0.01 * physics_loss
             losses.append(loss.item())
             loss.backward()
+            train_evm = torch.sqrt(mse_loss / torch.mean(Y_train.to(device)**2)) * 100
+            signal_acc = 100.0 - train_evm.item()
+            accuracies.append(signal_acc)
             optimizer.step()
-            t.set_postfix({"Loss": f"{loss.item():.6f}"})
-
+            t.set_postfix({"Loss": f"{loss.item():.6f}", "Acc": f"{signal_acc:.2f}%"})
+            
     train_end = time.time()
 
-    return model, losses, train_end - train_start
+    return model, losses, accuracies, train_end - train_start

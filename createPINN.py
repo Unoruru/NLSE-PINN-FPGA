@@ -1,6 +1,6 @@
 # Script for training complex PINN for multi-signal-type prediction
 # Supports 4 signal types: 16-QAM, 16-APSK, 16-PSK, and Star-QAM
-# Last Updated: 21 Mar 2026
+# Last Updated: 22 Mar 2026
 
 # See readme.md for detailed instructions on running this script, including environment setup and dependencies.
 
@@ -117,6 +117,8 @@ def main():
     inputs_save_path = os.path.join(results_dir, "generated_inputs.pklv2")
     accelerator_inputs_path = os.path.join(results_dir, "accelerator_inputs.npy")
 
+    perf_save_path = os.path.join(results_dir, "training_perf_metrics.pklv2")
+
     # check onnx export path validity
     assertlog(args.onnx_path.endswith(".onnx"), "ONNX export path must end with .onnx extension.")
     assertlog(args.onnx_path != "model.onnx", "ONNX export path cannot be 'model.onnx' to avoid overwriting FINN conversion output. Please specify a different name.")
@@ -182,7 +184,7 @@ def main():
     if not skip_training:
         # Train the complex PINN
         logger.log(logging.INFO, "Starting PINN training...")
-        model, losses, train_time = train(model, device, X_train, Y_train, epochs=args.epochs, lr=args.lr, beta2=beta2, gamma=gamma, scale_factor=scale_X)
+        model, losses, accuracies,train_time = train(model, device, X_train, Y_train, epochs=args.epochs, lr=args.lr, beta2=beta2, gamma=gamma, scale_factor=scale_X)
         logger.log(logging.INFO, f"PINN training completed in {train_time:.2f} seconds.")
         logger.log(logging.INFO, f"Final Training Loss: {losses[-1]:.6f} at {args.epochs} epochs.")
         
@@ -190,6 +192,10 @@ def main():
         if args.checkpoint:
             torch.save(model.state_dict(), model_save_path)
             logger.log(logging.INFO, f"Model checkpoint saved at {model_save_path}.")
+            pack = (args.sig_type, losses, accuracies)
+            with open(perf_save_path, "wb") as f:
+                pickle.dump(pack, f)
+            logger.log(logging.INFO, f"Training performance metrics saved to {perf_save_path}.")
 
     # Evaluate and compare with baseline
     logger.log(logging.INFO, "Evaluating PINN performance against baseline...")

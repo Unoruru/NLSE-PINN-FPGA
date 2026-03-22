@@ -1,5 +1,5 @@
 # Script to benchmark ComplexPINN when evaluating on CPU/GPU as compared to FPGA accelerator
-# Last Updated: 20 Mar 2026
+# Last Updated: 22 Mar 2026
 
 import os
 import sys
@@ -36,14 +36,13 @@ import brevitas.nn as qnn
 from brevitas.quant import Int8WeightPerTensorFloat, Int8ActPerTensorFloat, Int8Bias
 from pytorch_benchmark import benchmark
 
-from complex.pinn_complex import complexPINN
-
+from createPINN import complexPINN, assertlog
 
 def main():
     parser = argparse.ArgumentParser(description='Benchmark ComplexPINN on CPU/GPU vs FPGA accelerator')
     parser.add_argument('--device', type=str, default='cpu', choices=['cpu', 'cuda'], help='Device to benchmark on (default: cpu)')
-    parser.add_argument('--load_path', type=str, default='complex/sample_results/complex_pinn_checkpoint.pth', help='Path to load pre-trained model weights (default: complex/sample_results/complex_pinn_checkpoint.pth)')
-    parser.add_argument('--inputs_path', type=str, default='complex/sample_results/generated_inputs.pklv2', help='Path to load sample input data (default: complex/sample_results/generated_inputs.pklv2)')
+    parser.add_argument('--load_path', type=str, default='results/complex_pinn_checkpoint.pth', help='Path to load pre-trained model weights (default: results/complex_pinn_checkpoint.pth)')
+    parser.add_argument('--inputs_path', type=str, default='results/generated_inputs.pklv2', help='Path to load sample input data (default: results/generated_inputs.pklv2)')
 
     args = parser.parse_args()
 

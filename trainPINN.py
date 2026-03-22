@@ -34,6 +34,7 @@ logger.log(logging.INFO, "Log saved as training_pinn.log in current working dire
 
 from createPINN import assertlog
 from consolidate.helper import str2bool
+from consolidate.trainEval import load_get, write_save, plot_perf
 
 def main():
     parser = argparse.ArgumentParser(description="Run Complex PINN Training and Evaluation with Reinforcement Learning.")
@@ -49,6 +50,8 @@ def main():
     assertlog(args.epochs > 0, "Epoch count must be a positive integer.")
     assertlog(os.path.isfile(args.script_path), f"Script path '{args.script_path}' does not exist or is not a file.")
     assertlog(args.sig_type in ["16qam", "16apsk", "16psk", "star"], "Unsupported signal type specified. Supported types: '16qam', '16apsk', '16psk', 'star'.")
+
+    metrics_path = os.path.join("results", "training_perf_metrics.pklv2")
     
     startTime = time.time()
     # run initial training
@@ -57,20 +60,33 @@ def main():
     else:
         logger.log(logging.INFO, "Starting initial training to generate PINN.")
         os.system("python " + args.script_path + " --sig_type " + args.sig_type + " --onnx_export False --finn_convert False --visual False")
+    
+    sig_type, losses, accuracies = load_get(metrics_path)
 
     # run reinforcement training and evaluation using checkpoint from training
     logger.log(logging.INFO, f"Starting Reinforcement training and evaluation with reinforcement learning for {args.loop} iterations and {args.epochs} epochs each.")
     for i in range(args.loop - 1):
         logger.log(logging.INFO, f"Reinforcement Learning Iteration {i+1}/{args.loop}")
         os.system("python " + args.script_path + " --sig_type " + args.sig_type + " --load True --reinforce True --onnx_export False --finn_convert False --visual False --epochs {}".format(args.epochs))
+        cur_sig_type, cur_losses, cur_accuracies = load_get(metrics_path)
+        losses += cur_losses
+        accuracies += cur_accuracies
 
     logger.log(logging.INFO, f"Final Reinforcement Learning Iteration {args.loop}/{args.loop}")
     os.system("python " + args.script_path + " --sig_type " + args.sig_type + " --load True --reinforce True --visual False --epochs {}".format(args.epochs))
+    cur_sig_type, cur_losses, cur_accuracies = load_get(metrics_path)
+    losses += cur_losses
+    accuracies += cur_accuracies
     logger.log(logging.INFO, "Reinforcement learning iterations completed.")
 
     # Final evaluation with metrics and visualization for new random input
     logger.log(logging.INFO, "Final evaluation with new random input for metrics and visualization. Saving generated inputs for accelerator testing.")
     os.system("python " + args.script_path + " --sig_type " + args.sig_type + " --load True --save_inputs True --onnx_export False --finn_convert False")
+
+    # Create training performance plots and save metrics
+    write_save(metrics_path, args.sig_type, losses, accuracies)
+    plot_perf(metrics_path)
+    logger.log(logging.INFO, f"Training performance metrics saved and plots generated for signal type {args.sig_type}.")
 
     endTime = time.time()
     logger.log(logging.INFO, f"Total execution time: {endTime - startTime:.2f} seconds.")
