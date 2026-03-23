@@ -5,3 +5,12 @@ This folder contains the files required for FINN to regenerate the bitfiles. Ple
 See ``../20260315_complex_v2/_scripts`` for the scripts required to execute and evaluate on the accelerator. Appropriate generated input signal files are required to run the scripts.
 
 The corresponding release is titled: `v3-20260322: complex bitfiles for all supported signal type targetting PYNQ-ZU`.
+
+## Evaluation Script (Temp)
+The script generates the constellation diagram and metrics (EVM & SER) for the FPGA accelerator generated outputs. To start, run from the project root:
+```bash
+python pynq-zu/_deployment/20260322_complex_v3/evalComplexTemp.py --sig_type {sig_type}
+```
+Replace {sig_type} with one of: [`16apsk`, `16psk`, `16qam`, `star`]. By default, `16qam` is ran.
+
+See `/results` for the generated outputs.

@@ -1,0 +1,3 @@
+Evaluation Results (FPGA-Accelerated) for STAR Modulation:
+EVM: 11.78%
+SER: 0.77%

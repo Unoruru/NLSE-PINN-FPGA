@@ -1,0 +1,3 @@
+Evaluation Results (FPGA-Accelerated) for 16PSK Modulation:
+EVM: 6.57%
+SER: 0.62%

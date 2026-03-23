@@ -1,0 +1,3 @@
+Evaluation Results (FPGA-Accelerated) for 16QAM Modulation:
+EVM: 11.80%
+SER: 0.93%
