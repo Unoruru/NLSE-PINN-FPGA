@@ -1,0 +1,13 @@
+Metric,Value
+runtime[ms],0.1251697540283203
+throughput[images/s],7989.150476190476
+DRAM_in_bandwidth[MB/s],0.39945752380952376
+DRAM_out_bandwidth[MB/s],0.04793490285714286
+fclk[mhz],99.999
+batch_size,1
+fold_input[ms],0.03600120544433594
+pack_input[ms],0.03409385681152344
+copy_input_data_to_device[ms],0.19168853759765625
+copy_output_data_from_device[ms],0.10275840759277344
+unpack_output[ms],1.2755393981933594
+unfold_output[ms],0.02288818359375
