@@ -1,0 +1,16 @@
+2026-03-23 01:08:01, 858 __main__ INFO: Log saved as training_pinn.log in current working directory.
+2026-03-23 01:08:01, 859 __main__ INFO: Current working directory verified as project root: D:\Python\year4_proj\fix_commit\PINN_FPGA_Project.
+2026-03-23 01:08:01, 859 __main__ INFO: Results directory verified: D:\Python\year4_proj\fix_commit\PINN_FPGA_Project\results.
+2026-03-23 01:08:05, 203 __main__ INFO: Script started for training complex PINN with signal type: 16qam.
+2026-03-23 01:08:05, 295 __main__ INFO: Torch using cuda for training.
+2026-03-23 01:08:05, 332 __main__ INFO: Loaded model checkpoint from D:\Python\year4_proj\fix_commit\PINN_FPGA_Project\results\complex_pinn_checkpoint.pth.
+2026-03-23 01:08:05, 332 __main__ INFO: Reinforce not enabled. Skipping reinforcement training and proceeding to evaluation.
+2026-03-23 01:08:05, 339 __main__ INFO: Loaded training data and inputs from D:\Python\year4_proj\fix_commit\PINN_FPGA_Project\results\generated_inputs.pklv2 for evaluation.
+2026-03-23 01:08:05, 339 __main__ INFO: Evaluating PINN performance against baseline...
+2026-03-23 01:08:05, 511 __main__ INFO: Evaluation completed in 0.172675 seconds.
+2026-03-23 01:08:05, 524 __main__ INFO: EVM Summary - Distorted: 108.34%, SSFM: 1.47%, PINN: 11.79%
+2026-03-23 01:08:05, 531 __main__ INFO: SER Summary - Distorted: 88.67%, SSFM: 0.00%, PINN: 0.95%
+2026-03-23 01:08:05, 777 __main__ INFO: Constellation comparison figure saved at D:\Python\year4_proj\fix_commit\PINN_FPGA_Project\results\16qam_constellation_comparison.png.
+2026-03-23 01:08:05, 777 __main__ INFO: ONNX export not enabled. Skipping...
+2026-03-23 01:08:05, 777 __main__ INFO: FINN conversion not enabled. Skipping...
+2026-03-23 01:08:05, 777 __main__ INFO: Script execution completed successfully.

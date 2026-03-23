@@ -41,10 +41,15 @@ from createPINN import complexPINN, assertlog
 def main():
     parser = argparse.ArgumentParser(description='Benchmark ComplexPINN on CPU/GPU vs FPGA accelerator')
     parser.add_argument('--device', type=str, default='cpu', choices=['cpu', 'cuda'], help='Device to benchmark on (default: cpu)')
-    parser.add_argument('--load_path', type=str, default='results/complex_pinn_checkpoint.pth', help='Path to load pre-trained model weights (default: results/complex_pinn_checkpoint.pth)')
-    parser.add_argument('--inputs_path', type=str, default='results/generated_inputs.pklv2', help='Path to load sample input data (default: results/generated_inputs.pklv2)')
+    parser.add_argument('--num_runs', type=int, default=100, help='Number of runs for benchmarking (default: 100)')
+    parser.add_argument('--dir', type=str, default='results', help='Directory to save benchmark results (default: results)')
+    parser.add_argument('--load_file', type=str, default='complex_pinn_checkpoint.pth', help='Path to load pre-trained model weights (default: complex_pinn_checkpoint.pth)')
+    parser.add_argument('--inputs_file', type=str, default='generated_inputs.pklv2', help='Path to load sample input data (default: generated_inputs.pklv2)')
 
     args = parser.parse_args()
+
+    assertlog(args.num_runs > 0, "Number of runs must be a positive integer.")
+    assertlog(os.path.isfile("cwd.check"), "cwd.check file not found. Ensure you are running this script from the project root directory.")
 
     # Sanity check for arguments
     if args.device == 'cuda' and not torch.cuda.is_available():
@@ -53,8 +58,11 @@ def main():
     else:
         device = torch.device(args.device)
     
-    model_load_path = os.path.join(os.getcwd(), args.load_path)
-    inputs_save_path = os.path.join(os.getcwd(), args.inputs_path)
+    model_load_path = os.path.join(os.getcwd(), args.dir, args.load_file)
+    inputs_save_path = os.path.join(os.getcwd(), args.dir, args.inputs_file)
+
+    assertlog(os.path.isfile(model_load_path), f"Model checkpoint file not found at {model_load_path}. Ensure the file exists and is a valid .pth file.")
+    assertlog(os.path.isfile(inputs_save_path), f"Inputs file not found at {inputs_save_path}. Ensure the file exists and is a valid .pkl file.")
 
     # Set up model and device
     model = complexPINN(window_size=25, hlayers=3, hidden_dim=64).to(device)
@@ -88,7 +96,7 @@ def main():
 
     # Benchmark model inference on specified device
     model.eval()
-    results = benchmark(model, (X_train.to(device)), num_runs=100)
+    results = benchmark(model, (X_train.to(device)), num_runs=args.num_runs)
     logger.log(logging.INFO, f"Benchmark results on {device}: {results}")
 
     logger.log(logging.INFO, "Benchmarking completed. Results saved.")
