@@ -62,7 +62,8 @@ Activate the enviornment by the following:
 ```
 Install the required dependencies by the following:
 ```bash
-pip install --no-deps --ignore-requires-python -r req.txt # Designed for CUDA-accelerated workflows
+pip install --no-deps --ignore-requires-python -r req.txt         # Designed for CUDA 13 Systems
+pip install --no-deps --ignore-requires-python -r req_noncuda.txt # Designed for Non-CUDA Systems
 ```
 Flags are required as there are dependency and python version conflicts between packages. This has been tested to be functional for the script.
 
