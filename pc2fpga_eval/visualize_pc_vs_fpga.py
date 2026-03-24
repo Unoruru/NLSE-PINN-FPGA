@@ -107,8 +107,8 @@ def main():
 
     # --- Plot overlay ---
     fig, ax = plt.subplots(figsize=(6, 6))
-    ax.scatter(fpga_aligned.real, fpga_aligned.imag, s=1, alpha=0.4, color="red", label=f"FPGA (EVM {fpga_evm:.2f}%)")
-    ax.scatter(pc_aligned.real, pc_aligned.imag, s=1, alpha=0.4, color="tab:blue", label=f"PC (EVM {pc_evm:.2f}%)")
+    ax.scatter(fpga_aligned.real, fpga_aligned.imag, s=1, alpha=0.4, color="red", label=f"FPGA (EVM {fpga_evm:.2f}%, SER {fpga_ser:.2f}%)")
+    ax.scatter(pc_aligned.real, pc_aligned.imag, s=1, alpha=0.4, color="tab:blue", label=f"PC (EVM {pc_evm:.2f}%, SER {pc_ser:.2f}%)")
     ax.set_title(f"{args.sig_type.upper()} — PC vs FPGA PINN Output Overlay")
     ax.set_xlabel("In-Phase")
     ax.set_ylabel("Quadrature")
