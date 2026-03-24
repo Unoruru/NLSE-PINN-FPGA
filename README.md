@@ -36,17 +36,16 @@ PINNs QAT/
 ├── pynq-zu/                         # Files related to deployment on PYNQ-ZU FPGA accelerator
 │
 ├── sample_results/                  # Folder containing sample results for various signal types + saved/accelerator inputs
-│   ├── 16apsk/
-│   ├── 16psk/
-│   ├── 16qam/
-│   └── star/
+│   └── {sig_type}/                  # One folder per signal type (16apsk, 16psk, 16qam, star)
+│       ├── complex_pinn_checkpoint.pth   # Trained model weights
+│       ├── generated_inputs.pklv2        # Deterministic input snapshot — frozen random signal realisation
+│       │                                 # ensuring PC and FPGA evaluate on the exact same data for a valid comparison
+│       ├── accelerator_inputs.npy        # Same inputs quantised to int8 for FPGA consumption
+│       └── ...                           # Metrics, constellation plots, ONNX exports, training performance
 │
 ├── pc2fpga_eval/                    # PC-to-FPGA evaluation: combined metrics and overlay visualisation
 │   ├── visualize_pc_vs_fpga.py      # Script to generate PC vs FPGA overlay constellation plot
-│   ├── 16qam_pc2fpga_eval_metrics.txt
-│   ├── 16apsk_pc2fpga_eval_metrics.txt
-│   ├── 16psk_pc2fpga_eval_metrics.txt
-│   └── star_pc2fpga_eval_metrics.txt
+│   └── {sig_type}_pc2fpga_eval_metrics.txt  # Per-signal combined report: PC results, FPGA results, degradation delta
 │
 ├── qonnx2finn/                      # Folder containing function for FINN-ONNX export conversion
 │   ├── qonnx2finn.py
