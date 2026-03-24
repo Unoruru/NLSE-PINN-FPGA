@@ -252,15 +252,18 @@ def main():
 
         if args.visual:
             # visualize constellation diagrams
-            fig, ax = plt.subplots(1, 3, figsize=(15, 5))
+            fig, ax = plt.subplots(1, 3, figsize=(12, 4))
             sigs = [dist_f, dbp_f, pinn_f]
-            titles = ["Distorted", "SSFM Baseline", "8-bit PINN"]
+            titles = ["Distorted", "SSFM Baseline", "8-bit PINN Inference (PC)"]
             for i in range(3):
                 ax[i].scatter(sigs[i].real, sigs[i].imag, s=1, alpha=0.5)
                 ax[i].set_title(titles[i]); ax[i].set_aspect('equal')
                 ax[i].grid(visible=True, which='both', linestyle='--', linewidth=0.5)
                 ax[i].set_xlim(-1.5, 1.5); ax[i].set_ylim(-1.5, 1.5)
             fig.suptitle(f"Constellation Diagrams for {args.sig_type} Signals", fontsize=16)
+            ax[1].set_xlabel("In-Phase")
+            ax[0].set_ylabel("Quadrature")
+            plt.tight_layout(rect=[0, 0.03, 1, 0.95])
             plt.savefig(comparison_fig_path)
             logger.log(logging.INFO, f"Constellation comparison figure saved at {comparison_fig_path}.")
 
