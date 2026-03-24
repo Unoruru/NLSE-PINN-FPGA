@@ -1,0 +1,17 @@
+PC to FPGA Evaluation Metrics for 16QAM Modulation:
+
+[PC Results]
+EVM - Distorted:      108.34%
+EVM - SSFM Baseline:  1.47%
+EVM - PINN (PC):      11.79%
+SER - Distorted:      88.67%
+SER - SSFM Baseline:  0.00%
+SER - PINN (PC):      0.95%
+
+[FPGA Results]
+EVM - PINN (FPGA):    11.80%
+SER - PINN (FPGA):    0.93%
+
+[PC to FPGA Degradation]
+EVM Delta (FPGA - PC): +0.01%
+SER Delta (FPGA - PC): -0.02%

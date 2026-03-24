@@ -1,0 +1,17 @@
+PC to FPGA Evaluation Metrics for Star-QAM Modulation:
+
+[PC Results]
+EVM - Distorted:      101.19%
+EVM - SSFM Baseline:  1.48%
+EVM - PINN (PC):      11.78%
+SER - Distorted:      84.76%
+SER - SSFM Baseline:  0.00%
+SER - PINN (PC):      0.78%
+
+[FPGA Results]
+EVM - PINN (FPGA):    11.78%
+SER - PINN (FPGA):    0.77%
+
+[PC to FPGA Degradation]
+EVM Delta (FPGA - PC): +0.00%
+SER Delta (FPGA - PC): -0.01%
