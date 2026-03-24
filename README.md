@@ -19,15 +19,16 @@ where `A(z,t)` is the complex envelope, `beta2` is the group-velocity dispersion
 ```
 PINNs QAT/
 ├── createPINN.py                    # Base script for training PINN for all supported modulation types
-├── trainPINN .py                    # [Default Entry Point] Reinforcement training script for PINNs
+├── trainPINN.py                     # [Default Entry Point] Reinforcement training script for PINNs
 ├── benchmark.py                     # Script to run Pytorch benchmark on trained network
 ├── cwd.check                        # Check file for scripts
-├── req.txt                          # Requirements to run complex pinn script
+├── req.txt                          # Requirements to run complex pinn script (CUDA 13 systems)
+├── req_noncuda.txt                  # Requirements to run complex pinn script (non-CUDA systems)
 │
 ├── consolidate/                     # Folder containing functions required for training/evaluating PINN
 │   ├── __init__.py
-|   ├── config.py                    # Class constructor, SSFM, training function
-│   ├── helper.py                    # Helper functions, such as signal aligning       
+│   ├── config.py                    # Class constructor, SSFM, training function
+│   ├── helper.py                    # Helper functions, such as signal aligning
 │   ├── sigClassify.py               # Signal classification functions
 │   ├── sigGen.py                    # Signal generation functions
 │   └── trainEval.py                 # Training loss/accuracy evaluation functions
@@ -35,16 +36,23 @@ PINNs QAT/
 ├── pynq-zu/                         # Files related to deployment on PYNQ-ZU FPGA accelerator
 │
 ├── sample_results/                  # Folder containing sample results for various signal types + saved/accelerator inputs
-│   ├── 16apsk/                
-|   ├── 16psk/          
-│   ├── 16qam/              
-│   └── star/               
+│   ├── 16apsk/
+│   ├── 16psk/
+│   ├── 16qam/
+│   └── star/
 │
-├── qonnx2finn/                      # Folder containingfunction for FINN-ONNX export conversion
-│   ├── qonnx2finn.py                
+├── pc2fpga_eval/                    # PC-to-FPGA evaluation: combined metrics and overlay visualisation
+│   ├── visualize_pc_vs_fpga.py      # Script to generate PC vs FPGA overlay constellation plot
+│   ├── 16qam_pc2fpga_eval_metrics.txt
+│   ├── 16apsk_pc2fpga_eval_metrics.txt
+│   ├── 16psk_pc2fpga_eval_metrics.txt
+│   └── star_pc2fpga_eval_metrics.txt
+│
+├── qonnx2finn/                      # Folder containing function for FINN-ONNX export conversion
+│   ├── qonnx2finn.py
 │   └── req.txt                      # [Dependencies **ONLY IF** Running Independently]
 │
-├── legacy/                          # [DEPRECATED] Legacy scripts 
+├── legacy/                          # [DEPRECATED] Legacy scripts
 │
 └── README.md                        # This file
 ```
@@ -116,6 +124,35 @@ To run benchmarking on the trained networks, ensure that both the trained networ
 python benchmark.py --device {device} --dir {dir} --load_file {load_file} --inputs_file {inputs_file}
 ```
 Replace the appropriate variables in curly brackets with appropriate values. {device} accepts either "cpu" or "cuda", with "cpu" being the default fallback. {dir} should be the directory to the folder containing the model checkpoint and generated inputs file, relative to the current working directory. {load_file} and {inputs_file} should be the name of the respective checkpoint (.pth) and generated inputs (.pklv2) files. Results are saved as plain text in the ``benchmark.log`` log file.
+
+## PC to FPGA Evaluation
+
+The `pc2fpga_eval/` folder contains tools for comparing model performance between PC inference and FPGA-accelerated inference on the same deterministic inputs.
+
+### Combined Metrics
+
+Each `{sig_type}_pc2fpga_eval_metrics.txt` file combines results from both platforms side-by-side, including:
+- **PC Results**: EVM and SER for the distorted signal, SSFM baseline, and PINN on PC
+- **FPGA Results**: EVM and SER for the PINN on the FPGA accelerator
+- **Degradation Delta**: the difference (FPGA − PC) for each metric
+
+### Overlay Constellation Visualisation
+
+To generate an overlay scatter plot comparing PINN predictions from the PC and FPGA on the same signal, run:
+
+```bash
+python pc2fpga_eval/visualize_pc_vs_fpga.py --sig_type {sig_type}
+```
+
+This loads the pre-trained checkpoint and deterministic inputs from `sample_results/{sig_type}/`, runs PC inference, dequantises the FPGA output from `pynq-zu/_deployment/20260322_complex_v3/results/`, and saves `pc2fpga_eval/{sig_type}_pc_vs_fpga_overlay.png` showing both point clouds overlaid on one constellation diagram (PC in blue, FPGA in red). EVM and SER for both platforms are printed to the console.
+
+Additional CLI options:
+```bash
+python pc2fpga_eval/visualize_pc_vs_fpga.py --help
+```
+
+> [!NOTE]
+> This script requires the pre-trained checkpoint and `generated_inputs.pklv2` in `sample_results/{sig_type}/`, and the FPGA `output_0.npy` in the deployment results folder. No training is needed — all artefacts are pre-existing in `sample_results/`.
 
 ## Architecture
 
