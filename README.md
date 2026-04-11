@@ -51,8 +51,6 @@ PINNs QAT/
 │   ├── qonnx2finn.py
 │   └── req.txt                      # [Dependencies **ONLY IF** Running Independently]
 │
-├── legacy/                          # [DEPRECATED] Legacy scripts
-│
 └── README.md                        # This file
 ```
 
