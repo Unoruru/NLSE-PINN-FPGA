@@ -1,4 +1,4 @@
-# FPGA-Accelerated Physics Informed Neural Network for Optical Fibre Communications (Complex Network)
+# FPGA-Accelerated Physics Informed Neural Network for Optical Fibre Communications
 
 This script trains a Physics Informed Neural Network (PINN) to recover various modulated signals received at the endpoint through optical fibre. Noise is introduced due to physical constraints described by the Non-Linear Schrodingers Equation (NLSE).
 
@@ -17,7 +17,7 @@ where `A(z,t)` is the complex envelope, `beta2` is the group-velocity dispersion
 ## Project Structure
 
 ```
-PINNs QAT/
+PINN_FPGA_Project_Core/
 ├── createPINN.py                    # Base script for training PINN for all supported modulation types
 ├── trainPINN.py                     # [Default Entry Point] Reinforcement training script for PINNs
 ├── benchmark.py                     # Script to run Pytorch benchmark on trained network
