@@ -203,6 +203,8 @@ The following overlay plots compare PINN predictions from PC inference (blue) ag
       <img src="pc2fpga_eval/16apsk_pc_vs_fpga_overlay.png" width="200" alt="16apsk_overlay"/>
       <br>16APSK
     </td>
+  </tr>
+  <tr>
     <td align="center">
       <img src="pc2fpga_eval/16psk_pc_vs_fpga_overlay.png" width="200" alt="16psk_overlay"/>
       <br>16PSK
