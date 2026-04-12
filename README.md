@@ -196,21 +196,21 @@ The following overlay plots compare PINN predictions from PC inference (blue) ag
 <table>
   <tr>
     <td align="center">
-      <img src="pc2fpga_eval/16qam_pc_vs_fpga_overlay.png" width="200" alt="16qam_overlay"/>
+      <img src="pc2fpga_eval/16qam_pc_vs_fpga_overlay.png" width="400" alt="16qam_overlay"/>
       <br>16QAM
     </td>
     <td align="center">
-      <img src="pc2fpga_eval/16apsk_pc_vs_fpga_overlay.png" width="200" alt="16apsk_overlay"/>
+      <img src="pc2fpga_eval/16apsk_pc_vs_fpga_overlay.png" width="400" alt="16apsk_overlay"/>
       <br>16APSK
     </td>
   </tr>
   <tr>
     <td align="center">
-      <img src="pc2fpga_eval/16psk_pc_vs_fpga_overlay.png" width="200" alt="16psk_overlay"/>
+      <img src="pc2fpga_eval/16psk_pc_vs_fpga_overlay.png" width="400" alt="16psk_overlay"/>
       <br>16PSK
     </td>
     <td align="center">
-      <img src="pc2fpga_eval/star_pc_vs_fpga_overlay.png" width="200" alt="star_overlay"/>
+      <img src="pc2fpga_eval/star_pc_vs_fpga_overlay.png" width="400" alt="star_overlay"/>
       <br>Star
     </td>
   </tr>
