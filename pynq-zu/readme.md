@@ -9,8 +9,7 @@
  4. In `$finn_path`, open `en_var.sh` and alter the path and version number of vivado to target the locally installed path and version. The default board is the Pynq-ZU development board.
  5. Launch the locally installed copy of Vivado. Ensure that the Pynq-ZU board files are downloaded. Once confirmed, Vivado can be safely closed.
  6. Open a terminal window within `$finn_path`. Run `source en_var.sh` to setup the required environmental variables in the local terminal window.
- 7. (Optional) If in UCL Lab, run `source en_proxy.sh` to setup the network proxy for the FINN framework.
- 8. Run `./run-docker.sh quicktest` to verify that both docker and the FINN framework is working properly.
+ 7. Run `./run-docker.sh quicktest` to verify that both docker and the FINN framework is working properly.
 
  > [!NOTE]
  > The `en_var.sh` script only sets the required environmental variables for the current local session terminal window. Once the terminal window is killed, or when operating within a different terminal window, you must run the script again to setup the enviornmental variables. Running the framework without the correct environmental variables can lead to irreparable damage to the modifications on the original FINN framework, which will break compatibility with the Pynq-ZU FPGA development board.
@@ -24,8 +23,7 @@
  2. [Required] Adjust the parameters within the `$model_path/dataflow_build_config.json` file to suit your build needs. Remove references where applicable.
  3. [Optional] Adjust the parameters within `$model_path/folding_config.json` file to suit your build needs. For alternatives, see the wiki for the FINN framework [here](https://finn.readthedocs.io/en/latest/command_line.html#simple-dataflow-build-mode). You must remove references to this file within `$model_path/dataflow_build_config.json` if unused.
  4. [Required] Open a terminal window at `$finn_path`. Setup required enviornmental variables using `source en_var.sh`.
- 5. [Optional] If in UCL lab, run `source en_proxy.sh` to setup network proxies for the FINN framework.
- 6. Run `./run-docker.sh build_dataflow $model_path` to start the build.
+ 5. Run `./run-docker.sh build_dataflow $model_path` to start the build.
 
 # Running FINN_EXAMPLES on the Pynq-ZU
 A bitfile containing the `tfc-w1a1` neural network compiled for the Pynq-ZU is available in `/bitfiles`. This can be used with the example found in the FINN_EXAMPLES repo [here](https://github.com/Xilinx/finn-examples/blob/main/finn_examples/notebooks/0_mnist_with_fc_networks.ipynb). Please note that both the bitfile (`.bit`) and the metadata file (`.hwh`) must be placed in the folder specified by the python script in FINN_EXAMPLES.
