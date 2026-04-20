@@ -67,13 +67,13 @@ Activate the enviornment by the following:
 ```
 Install the required dependencies by the following:
 ```bash
-pip install --no-deps --ignore-requires-python -r req.txt         # Designed for CUDA 13 Systems
-pip install --no-deps --ignore-requires-python -r req_noncuda.txt # Designed for Non-CUDA Systems
+pip install --no-deps --ignore-requires-python -r req.txt         # Designed for CUDA 13 Windows Systems
+pip install --no-deps --ignore-requires-python -r req_noncuda.txt # Designed for Non-CUDA/Non-Windows Systems
 ```
 Flags are required as there are dependency and python version conflicts between packages. This has been tested to be functional for the script.
 
 > [!NOTE]
-> The requirements file is specifcally designed for the use with a CUDA device, and has only been tested on CUDA workflows on Windows 11 with Python 3.12.1. There is no guarentee that it will function on other setups.
+> The workflow has only been tested on Windows 11 with a CUDA device on Python 3.12.1. There is no guarantee that it will work on other setups. As the main entry point relies on the `os` library calling `python` in the terminal, it is important that `python` calls the appropriate version in the terminal. On Linux, it is recommended that a `conda` environment be used instead.
 
 ## Quick Start
 To begin, simply run the script by calling:
